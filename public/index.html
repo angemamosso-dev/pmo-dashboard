@@ -1238,7 +1238,12 @@ document.getElementById("btnExportExcel").addEventListener("click", exportExcel)
 document.getElementById("btnExportImage").addEventListener("click", exportImage);
 document.getElementById("btnExportPrint").addEventListener("click", exportPrint);
 
+// Lancement sécurisé : on attend que loadState termine avant de dessiner
 loadState().then(() => {
+  renderAll();
+}).catch(err => {
+  console.error("Erreur critique d'initialisation :", err);
+  state = cloneData(SEED_DATA);
   renderAll();
 });
 </script>
