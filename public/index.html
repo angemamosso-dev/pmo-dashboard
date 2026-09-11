@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Ressources — PMO AKIENI</title>
+<style>
+  :root{
+    --navy:#1c3d63; --navy2:#2a4d7a; --blue:#2A78D6; --blue-light:#eaf1fb; --blue-dark:#1c5cab;
+    --orange:#c1631f; --orange-light:#fceee3; --orange-dark:#b3551a;
+    --grey-bg:#f4f5f7; --border:#dfe3e8; --text:#2c333a; --muted:#767f89;
+    --sous:#8a5c00; --sous-bg:#fef3dc; --opt:#0c6b0c; --opt-bg:#e5f6e5;
+    --tendu:#a34321; --tendu-bg:#fdeae1; --sur:#b02a2a; --sur-bg:#fbe4e4;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--grey-bg); color:var(--text); font-size:13px;
+  }
+  header{padding:20px 28px 12px; background:#fff; border-bottom:1px solid var(--border);}
+  header h1{margin:0; font-size:20px; color:var(--navy); font-weight:700;}
+  header p{margin:4px 0 0; color:var(--muted); font-size:13px;}
+
+  .section{padding:14px 28px 4px;}
+  .section h2{font-size:12.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:0 0 8px;}
+
+  .kpis{display:flex; gap:12px; flex-wrap:wrap;}
+  .kpi{background:#fff; border:1px solid var(--border); border-radius:8px; padding:10px 16px; min-width:130px;}
+  .kpi .label{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
+  .kpi .value{font-size:22px; font-weight:700; color:var(--navy); margin-top:2px;}
+
+  .status-cards{display:flex; gap:12px; flex-wrap:wrap;}
+  .status-card{background:#fff; border:1px solid var(--border); border-radius:8px; padding:10px 16px; flex:1; min-width:260px;}
+  .status-card .title{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-bottom:8px;}
+  .status-chip-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .status-chip{border-radius:8px; padding:6px 10px; font-size:11.5px; font-weight:700; flex:1; text-align:center; min-width:70px;}
+
+  .profile-table-wrap{background:#fff; border:1px solid var(--border); border-radius:8px; overflow:auto;}
+  table.profile-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  table.profile-table th, table.profile-table td{padding:7px 10px; text-align:center; border-bottom:1px solid var(--border);}
+  table.profile-table th{background:var(--navy); color:#fff; font-weight:600; font-size:11.5px;}
+  table.profile-table td:first-child, table.profile-table th:first-child{text-align:left;}
+
+  .toolbar{display:flex; gap:8px; padding:12px 28px; flex-wrap:wrap; align-items:center;}
+  button{
+    background:var(--navy); color:#fff; border:none; border-radius:6px; padding:8px 14px;
+    font-size:12.5px; cursor:pointer; font-weight:600;
+  }
+  button.secondary{background:#fff; color:var(--navy); border:1px solid var(--navy);}
+  button.danger{background:#fff; color:var(--sur); border:1px solid var(--sur);}
+  button:hover{opacity:.88;}
+  #fileImport{display:none;}
+  .toolbar .spacer{flex:1;}
+  .save-status{font-size:11.5px; color:var(--muted); align-self:center;}
+
+  .dropdown{position:relative; display:inline-block;}
+  .dropdown-menu{
+    display:none; position:absolute; top:calc(100% + 4px); left:0; background:#fff; border:1px solid var(--border);
+    border-radius:8px; box-shadow:0 6px 18px rgba(20,30,45,.15); min-width:220px; z-index:40; overflow:hidden;
+  }
+  .dropdown-menu.open{display:block;}
+  .dropdown-menu button{
+    display:block; width:100%; text-align:left; background:#fff; color:var(--text); border:none;
+    border-radius:0; padding:9px 14px; font-weight:500;
+  }
+  .dropdown-menu button:hover{background:var(--grey-bg);}
+
+  .help-wrap{padding:0 28px 12px;}
+  details{background:#fff; border:1px solid var(--border); border-radius:8px; padding:10px 14px;}
+  summary{cursor:pointer; font-weight:600; color:var(--navy); font-size:12.5px;}
+  details p{margin:8px 0 4px; line-height:1.5; color:var(--text); font-size:12.5px;}
+  details b{color:var(--navy);}
+
+  .table-wrap{margin:0 28px 28px; background:#fff; border:1px solid var(--border); border-radius:8px; overflow:auto; max-height:72vh;}
+  table#matrice{border-collapse:separate; border-spacing:0; font-size:12.5px; white-space:nowrap;}
+  table#matrice th, table#matrice td{border-bottom:1px solid var(--border); border-right:1px solid var(--border); padding:4px 6px; text-align:center;}
+  thead th{background:var(--navy); color:#fff; position:sticky; top:0; z-index:3; font-weight:600;}
+  thead tr.proj-row th{background:var(--navy2); font-size:12px; vertical-align:top;}
+  th.rowlabel-head, td.rowlabel{position:sticky; left:0; z-index:2; background:#fff; text-align:left; min-width:172px; max-width:210px; white-space:normal;}
+  thead th.rowlabel-head{z-index:4; background:var(--navy);}
+  td.rowlabel .rtop{display:flex; align-items:center; gap:4px;}
+  td.rowlabel .rm{cursor:pointer; color:var(--sur); font-size:11px; font-weight:700; margin-left:auto; padding:0 2px;}
+  th.projhead{min-width:118px; position:relative;}
+  th.projhead .pm{cursor:pointer; color:#ffd; font-size:11px; margin-left:6px; float:right;}
+  th .phead-top{display:flex; align-items:center; gap:4px; margin-bottom:3px;}
+
+  .drag-handle{cursor:grab; color:var(--muted); font-size:13px; user-select:none; padding:0 2px; flex:0 0 auto;}
+  .drag-handle:active{cursor:grabbing;}
+  th.projhead .drag-handle{color:#cfe0f2;}
+  tr.drag-over-row td.rowlabel{box-shadow:inset 0 2px 0 var(--blue);}
+  th.drag-over-col{box-shadow:inset 2px 0 0 var(--blue-dark);}
+
+  input.name-input, input.role-input, input.proj-name-input{
+    border:1px solid transparent; background:transparent; font-size:12.5px; padding:2px 3px; border-radius:4px; width:100%;
+    color:inherit; font-weight:600;
+  }
+  input.role-input{font-weight:400; color:var(--muted); font-size:11px;}
+  input.name-input:focus, input.role-input:focus, input.proj-name-input:focus{border-color:var(--navy); background:#fff; color:var(--text);}
+  input.proj-name-input{color:#fff; font-weight:700; text-align:center;}
+  input.proj-name-input:focus{color:var(--text);}
+  select.type-select, select.proj-phase-select{
+    border:1px solid transparent; background:transparent; font-size:10.5px; color:var(--muted); border-radius:4px; max-width:150px;
+  }
+  select.proj-phase-select{color:#cfe0f2; font-size:10px; max-width:130px;}
+  select.type-select:focus, select.proj-phase-select:focus{border-color:var(--navy); background:#fff; color:var(--text);}
+
+  input.cell-input{
+    width:52px; border:1px solid transparent; background:transparent; text-align:center;
+    font-size:12.5px; border-radius:4px; padding:2px; color:var(--text); font-weight:600;
+  }
+  input.cell-input:focus{border-color:var(--navy); background:#fff;}
+  td.aff-cell{background:var(--blue-light);}
+  td.chg-cell{background:var(--orange-light);}
+
+  td.total-cell{font-weight:700; background:#fafbfc;}
+  td.status-cell span{padding:2px 8px; border-radius:10px; font-weight:700; font-size:11px; white-space:nowrap;}
+  .st-sous{background:var(--sous-bg); color:var(--sous);}
+  .st-opt{background:var(--opt-bg); color:var(--opt);}
+  .st-tendu{background:var(--tendu-bg); color:var(--tendu);}
+  .st-sur{background:var(--sur-bg); color:var(--sur);}
+
+  tfoot td{font-weight:700; background:#eef0f3; position:sticky; bottom:0;}
+  tfoot td.rowlabel{position:sticky; left:0; bottom:0; z-index:3; background:#eef0f3;}
+
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(20,30,45,.45); z-index:50;
+    align-items:center; justify-content:center;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff; border-radius:10px; padding:22px 26px; width:340px; max-width:90vw; max-height:86vh; overflow:auto;}
+  .modal.wide{width:560px;}
+  .modal h3{margin:0 0 14px; color:var(--navy); font-size:16px;}
+  .modal label{display:block; font-size:12px; color:var(--muted); margin:10px 0 3px; font-weight:600;}
+  .modal input, .modal select{width:100%; padding:7px 9px; border:1px solid var(--border); border-radius:6px; font-size:13px;}
+  .modal .actions{display:flex; justify-content:flex-end; gap:8px; margin-top:18px;}
+
+  .lists-cols{display:flex; gap:20px;}
+  .lists-col{flex:1; min-width:0;}
+  .lists-col h4{margin:0 0 8px; color:var(--navy); font-size:13px;}
+  .list-item{display:flex; gap:6px; align-items:center; margin-bottom:6px;}
+  .list-item input{flex:1; padding:5px 7px; border:1px solid var(--border); border-radius:5px; font-size:12.5px;}
+  .list-item .del{cursor:pointer; color:var(--sur); font-weight:700; padding:2px 6px; flex:0 0 auto;}
+  .list-add{display:flex; gap:6px; margin-top:8px;}
+  .list-add input{flex:1; padding:5px 7px; border:1px dashed var(--border); border-radius:5px; font-size:12.5px;}
+  .list-add button{padding:5px 10px; font-size:11.5px;}
+
+  .legend{padding:0 28px 20px; font-size:11.5px; color:var(--muted);}
+  .legend span.sw{display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:4px; vertical-align:middle;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Dashboard Ressources — Portefeuille PMO AKIENI</h1>
+  <p>Vue Matrice ressource × projet — application locale, tout est modifiable, données enregistrées sur cet ordinateur</p>
+</header>
+
+<div class="section">
+  <h2>Indicateurs clés</h2>
+  <div class="kpis" id="kpis"></div>
+</div>
+
+<div class="section">
+  <div class="status-cards" id="statusCards"></div>
+</div>
+
+<div class="section">
+  <h2>Indicateurs par profil (type de ressource)</h2>
+  <div class="profile-table-wrap">
+    <table class="profile-table" id="profileTable"></table>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button id="btnAddRes">+ Ressource</button>
+  <button id="btnAddProj">+ Projet</button>
+  <button class="secondary" id="btnManageLists">Gérer les listes (types / phases)</button>
+  <div class="spacer"></div>
+  <div class="dropdown" id="exportDropdown">
+    <button class="secondary" id="btnExportMenu">Exporter ▾</button>
+    <div class="dropdown-menu" id="exportMenu">
+      <button id="btnExportJson">Sauvegarde (.json)</button>
+      <button id="btnExportCsv">Tableau (.csv)</button>
+      <button id="btnExportExcel">Classeur Excel (.xls)</button>
+      <button id="btnExportImage">Image (.png)</button>
+      <button id="btnExportPrint">Rapport imprimable (nouvel onglet)</button>
+    </div>
+  </div>
+  <button class="secondary" id="btnImportTrigger">Importer une sauvegarde</button>
+  <input type="file" id="fileImport" accept="application/json">
+  <button class="danger" id="btnReset">Réinitialiser (exemple)</button>
+  <span class="save-status" id="saveStatus"></span>
+</div>
+
+<div class="help-wrap">
+  <details>
+    <summary>ⓘ Comment utiliser ce tableau ?</summary>
+    <p><b>% Affecté</b> (bloc bleu) = la part du temps de la ressource nominalement assignée à ce projet.</p>
+    <p><b>% Chargeabilité</b> (bloc orange) = pour ce même projet, la part de cette affectation que le travail réellement réalisé couvre — 100&nbsp;% veut dire que l'activité couvre exactement l'affectation sur ce projet ; 50&nbsp;% = seule la moitié est couverte ; 150&nbsp;% = dépassement sur ce projet précis. C'est un ratio, toujours relatif au % Affecté de la même case, jamais une valeur indépendante.</p>
+    <p><b>Chargeabilité totale</b> = pour chaque projet, ce ratio est converti en temps réellement absolu (ratio × Affecté de ce projet), puis additionné sur tous les projets de la ressource — directement comparable au <b>Total affecté</b>. <b>Écart</b> = Chargeabilité totale − Total affecté.</p>
+    <p>Seuils de statut : Sous-utilisé &lt; 70&nbsp;% · Optimal 70–100&nbsp;% · Tendu 100–115&nbsp;% · Surcharge &gt; 115&nbsp;%.</p>
+    <p><b>Tout est modifiable directement dans le tableau</b> : nom, type et rôle de chaque ressource, nom et phase de chaque projet, et bien sûr les %. Utilise la poignée <b>⠿</b> pour glisser-déposer une ressource ou un projet et changer son ordre. « Gérer les listes » permet d'ajouter/renommer/retirer les Types et les Phases proposés dans les menus déroulants. Le ✕ retire une ressource ou un projet du tableau.</p>
+    <p>Les données sont sauvegardées automatiquement dans ce navigateur. Le menu « Exporter » propose une sauvegarde JSON (à réimporter plus tard ou sur un autre poste), un export CSV, un classeur Excel, une image PNG et un rapport imprimable qui s'ouvre dans un nouvel onglet.</p>
+  </details>
+</div>
+
+<div class="table-wrap">
+  <table id="matrice">
+    <thead></thead>
+    <tbody></tbody>
+    <tfoot></tfoot>
+  </table>
+</div>
+
+<div class="legend">
+  <span class="sw" style="background:var(--blue-light);border:1px solid var(--blue-dark);"></span> % Affecté
+  &nbsp;&nbsp;
+  <span class="sw" style="background:var(--orange-light);border:1px solid var(--orange-dark);"></span> % Chargeabilité (ratio vs Affecté du même projet)
+  &nbsp;&nbsp; — ⠿ glisser pour réordonner · ✕ retirer.
+</div>
+
+<!-- Modal: add resource -->
+<div class="modal-overlay" id="modalRes">
+  <div class="modal">
+    <h3>Ajouter une ressource</h3>
+    <label>Nom</label>
+    <input type="text" id="newResName" placeholder="ex. Sarah">
+    <label>Type</label>
+    <select id="newResType"></select>
+    <label>Rôle</label>
+    <input type="text" id="newResRole" placeholder="ex. Développeur Backend">
+    <div class="actions">
+      <button class="secondary" onclick="closeModal('modalRes')">Annuler</button>
+      <button onclick="confirmAddResource()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: add project -->
+<div class="modal-overlay" id="modalProj">
+  <div class="modal">
+    <h3>Ajouter un projet</h3>
+    <label>Nom</label>
+    <input type="text" id="newProjName" placeholder="ex. Nouveau projet X">
+    <label>Phase</label>
+    <select id="newProjPhase"></select>
+    <div class="actions">
+      <button class="secondary" onclick="closeModal('modalProj')">Annuler</button>
+      <button onclick="confirmAddProject()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: manage lists (types / phases) -->
+<div class="modal-overlay" id="modalLists">
+  <div class="modal wide">
+    <h3>Gérer les listes</h3>
+    <div class="lists-cols">
+      <div class="lists-col">
+        <h4>Types de ressource</h4>
+        <div id="typesListWrap"></div>
+        <div class="list-add">
+          <input type="text" id="newTypeInput" placeholder="Nouveau type…">
+          <button onclick="addType()">+ Ajouter</button>
+        </div>
+      </div>
+      <div class="lists-col">
+        <h4>Phases de projet</h4>
+        <div id="phasesListWrap"></div>
+        <div class="list-add">
+          <input type="text" id="newPhaseInput" placeholder="Nouvelle phase…">
+          <button onclick="addPhase()">+ Ajouter</button>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button onclick="closeModal('modalLists')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SEED_DATA = {"resources": [{"name": "Ahmed", "type": "Technique", "role": "Développeur Backend"}, {"name": "Orphée", "type": "Technique", "role": "Développeur Frontend / Mobile"}, {"name": "Anziz", "type": "Technique", "role": "Ingénieur Système"}, {"name": "Loyic", "type": "Technique", "role": "Ingénieur Réseau"}, {"name": "Pape", "type": "Technique", "role": "Architecte Solutions"}, {"name": "Gabrielle", "type": "Technique", "role": "Testeur QA / Recette"}, {"name": "Claude", "type": "Technique", "role": "Développeur Backend"}, {"name": "Husein", "type": "Technique", "role": "Développeur Frontend / Mobile"}, {"name": "Déo", "type": "Technique", "role": "Ingénieur Système"}, {"name": "Ange", "type": "Technique", "role": "Ingénieur Réseau"}, {"name": "Karhyt", "type": "Technique", "role": "Architecte Solutions"}, {"name": "Audrey", "type": "Technique", "role": "Testeur QA / Recette"}, {"name": "Marcel", "type": "Technique", "role": "Développeur Backend"}, {"name": "Jaques Dani", "type": "Technique", "role": "Développeur Frontend / Mobile"}, {"name": "Indrix", "type": "Technique", "role": "Ingénieur Système"}, {"name": "Typhaine", "type": "Technique", "role": "Ingénieur Réseau"}, {"name": "Reine", "type": "Technique", "role": "Architecte Solutions"}, {"name": "Destino", "type": "Technique", "role": "Testeur QA / Recette"}, {"name": "Eden", "type": "Projet", "role": "Chef de Projet"}, {"name": "Gatien", "type": "Projet", "role": "Coordinateur Projet"}, {"name": "Abed", "type": "Projet", "role": "Chef de Projet"}, {"name": "Divin", "type": "Projet", "role": "Coordinateur Projet"}, {"name": "Ester", "type": "Projet", "role": "Chef de Projet"}, {"name": "Ifrikia", "type": "Projet", "role": "Coordinateur Projet"}, {"name": "Nadege", "type": "Projet", "role": "Chef de Projet"}, {"name": "Michelle", "type": "Projet", "role": "Coordinateur Projet"}, {"name": "Nédith", "type": "Support", "role": "Support & Exploitation"}, {"name": "Jacques N", "type": "Support", "role": "Support Utilisateurs"}, {"name": "Glody", "type": "Support", "role": "Support & Exploitation"}, {"name": "Orion", "type": "Support", "role": "Support Utilisateurs"}, {"name": "Alexandre", "type": "Support", "role": "Support & Exploitation"}, {"name": "Fadel", "type": "Support", "role": "Support Utilisateurs"}, {"name": "Tom", "type": "Autre", "role": "Rôle transverse"}, {"name": "Christian", "type": "Autre", "role": "À préciser"}, {"name": "Achille", "type": "Autre", "role": "Rôle transverse"}, {"name": "Fariol", "type": "Autre", "role": "À préciser"}, {"name": "Rick", "type": "Autre", "role": "Rôle transverse"}, {"name": "Rolic", "type": "BA", "role": "Business Analyst"}, {"name": "Christoffert", "type": "BA", "role": "Analyste Métier"}, {"name": "Anthony", "type": "BA", "role": "Business Analyst"}, {"name": "Sanctifier", "type": "BA", "role": "Analyste Métier"}, {"name": "Victoire", "type": "RH", "role": "Formation & RH"}, {"name": "Alfa", "type": "RH", "role": "Responsable RH"}, {"name": "Daniel K.", "type": "RH", "role": "Formation & RH"}], "projects": [{"name": "NSIA - Parcours client", "phase": "Initialisation et cadrage"}, {"name": "AMC - API Digit V C", "phase": "Planification"}, {"name": "SFEC 2", "phase": "Conception/Architecture et Design"}, {"name": "KAMOA - Defacash", "phase": "Développement et Mise en œuvre"}, {"name": "BCH-Automates", "phase": "Test & validation"}, {"name": "MPTEN-eGouv", "phase": "Mise en prod"}, {"name": "MPTEN-webSite", "phase": "Support et Amélioration Continue"}, {"name": "MPTEN-eGov portail", "phase": "Initialisation et cadrage"}], "alloc": [[[1, 1.2], null, null, [0.2, 0.7], null, null, null, null], [null, [0.5, 0.75], null, null, null, null, null, null], [null, null, [0.8, 1.35], null, null, null, null, null], [null, null, null, [0.6, 0.95], null, null, null, null], [null, null, null, null, [0.4, 0.7], null, null, null], [[0.4, 1.2], null, null, null, null, [0.9, 1.1], null, null], [null, null, null, null, null, null, [0.7, 0.6], null], [null, null, null, null, null, null, null, [1, 0.9]], [[0.5, 1.05], null, null, null, null, null, null, null], [null, [0.8, 1.2], null, null, null, null, null, null], [null, null, [0.6, 0.75], null, null, [0.5, 1.1], null, null], [null, null, null, [0.4, 1.35], null, null, null, null], [null, null, null, null, [0.9, 0.95], null, null, null], [null, null, null, null, null, [0.7, 0.7], null, null], [null, null, null, null, null, null, [1, 1.1], null], [null, null, [0.45, 0.75], null, null, null, null, [0.5, 0.6]], [[0.8, 0.9], null, null, null, null, null, null, null], [null, [0.6, 1.05], null, null, null, null, null, null], [null, null, [0.4, 1.2], null, null, null, null, null], [null, null, null, [0.9, 0.75], null, null, null, null], [null, null, null, null, [0.7, 1.35], null, null, [0.3, 0.6]], [null, null, null, null, null, [1, 0.95], null, null], [null, null, null, null, null, null, [0.5, 0.7], null], [null, null, null, null, null, null, null, [0.8, 1.1]], [[0.6, 0.6], null, null, null, null, null, null, null], [null, [0.4, 0.9], null, null, [0.25, 1.35], null, null, null], [null, null, [0.9, 1.05], null, null, null, null, null], [null, null, null, [0.7, 1.2], null, null, null, null], [null, null, null, null, [1, 0.75], null, null, null], [null, null, null, null, null, [0.5, 1.35], null, null], [null, [0.35, 0.9], null, null, null, null, [0.8, 0.95], null], [null, null, null, null, null, null, null, [0.6, 0.7]], [[0.4, 1.1], null, null, null, null, null, null, null], [null, [0.9, 0.6], null, null, null, null, null, null], [null, null, [0.7, 0.9], null, null, null, null, null], [null, null, null, [1, 1.05], null, null, [0.2, 0.95], null], [null, null, null, null, [0.5, 1.2], null, null, null], [null, null, null, null, null, [0.8, 0.75], null, null], [null, null, null, null, null, null, [0.6, 1.35], null], [null, null, null, null, null, null, null, [0.4, 0.95]], [[0.9, 0.7], null, null, [0.4, 1.05], null, null, null, null], [null, [0.7, 1.1], null, null, null, null, null, null], [null, null, [1, 0.6], null, null, null, null, null], [null, null, null, [0.5, 0.9], null, null, null, null]]};
+const DEFAULT_TYPES = ["Projet","BA","Technique","Support","RH","Autre"];
+const DEFAULT_PHASES = ["Initialisation et cadrage","Planification","Conception/Architecture et Design","Développement et Mise en œuvre","Test & validation","Mise en prod","Support et Amélioration Continue"];
+SEED_DATA.types = DEFAULT_TYPES.slice();
+SEED_DATA.phases = DEFAULT_PHASES.slice();
+
+/* ---------------------------------------------------------------------
+   State
+--------------------------------------------------------------------- */
+const STORAGE_KEY = "pmo_dashboard_v1";
+let state = null;
+let dragCtx = null; // {kind:'res'|'proj', from:index}
+
+function cloneData(obj){
+  if(typeof structuredClone === "function") return structuredClone(obj);
+  return JSON.parse(JSON.stringify(obj));
+}
+
+async function loadState(){
+  setSaveStatus("Chargement depuis la base...");
+  try {
+    const res = await fetch('/api/dashboard');
+    const data = await res.json();
+    
+    if (data && !data.error) {
+      state = data;
+      if(!Array.isArray(state.types) || !state.types.length) state.types = DEFAULT_TYPES.slice();
+      if(!Array.isArray(state.phases) || !state.phases.length) state.phases = DEFAULT_PHASES.slice();
+      setSaveStatus("Données synchronisées.");
+      return;
+    }
+  } catch (e) {
+    console.error(e);
+    setSaveStatus("Erreur de connexion. Chargement exemple.");
+  }
+  state = cloneData(SEED_DATA);
+}
+
+async function saveState(){
+  setSaveStatus("Enregistrement en cours...");
+  try {
+    await fetch('/api/dashboard', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state)
+    });
+    setSaveStatus("Enregistré à " + new Date().toLocaleTimeString("fr-FR"));
+  } catch (e) {
+    console.error(e);
+    setSaveStatus("Échec de la sauvegarde.");
+  }
+}
+
+function setSaveStatus(msg){
+  document.getElementById("saveStatus").textContent = msg;
+}
+
+/* ---------------------------------------------------------------------
+   Calculations
+--------------------------------------------------------------------- */
+function statusFor(v){
+  if(v < 0.70) return {label:"Sous-utilisé", cls:"st-sous"};
+  if(v <= 1.0) return {label:"Optimal", cls:"st-opt"};
+  if(v <= 1.15) return {label:"Tendu", cls:"st-tendu"};
+  return {label:"Surcharge", cls:"st-sur"};
+}
+const STATUS_ORDER = ["Sous-utilisé","Optimal","Tendu","Surcharge"];
+const STATUS_CLASS = {"Sous-utilisé":"st-sous","Optimal":"st-opt","Tendu":"st-tendu","Surcharge":"st-sur"};
+
+function computeResourceRow(ri){
+  const row = state.alloc[ri];
+  let totalAff = 0, totalChg = 0;
+  for(let j=0;j<state.projects.length;j++){
+    const cell = row[j];
+    if(cell){
+      const aff = cell[0] || 0;
+      const chg = cell[1] || 0;
+      totalAff += aff;
+      totalChg += aff * chg;
+    }
+  }
+  return {totalAff, totalChg, ecart: totalChg - totalAff};
+}
+
+function computeProjectTotals(pj){
+  let totalAff = 0, totalChg = 0;
+  for(let i=0;i<state.resources.length;i++){
+    const cell = state.alloc[i][pj];
+    if(cell){
+      const aff = cell[0] || 0;
+      const chg = cell[1] || 0;
+      totalAff += aff;
+      totalChg += aff * chg;
+    }
+  }
+  return {totalAff, totalChg};
+}
+
+function fmtPct(v){
+  return Math.round(v*100) + "%";
+}
+
+/* ---------------------------------------------------------------------
+   Color scales
+--------------------------------------------------------------------- */
+function lerp(a,b,t){ return a + (b-a)*t; }
+function hexToRgb(h){
+  h = h.replace("#","");
+  return [parseInt(h.substr(0,2),16), parseInt(h.substr(2,2),16), parseInt(h.substr(4,2),16)];
+}
+function rgbToHex(r,g,b){
+  return "#" + [r,g,b].map(v=>Math.round(v).toString(16).padStart(2,"0")).join("");
+}
+function colorScale(v, max, c0, c1){
+  const t = Math.max(0, Math.min(1, v/max));
+  const a = hexToRgb(c0), b = hexToRgb(c1);
+  return rgbToHex(lerp(a[0],b[0],t), lerp(a[1],b[1],t), lerp(a[2],b[2],t));
+}
+function affColor(v){ return colorScale(v, 1.3, "eaf1fb", "1c5cab"); }
+function chgColor(v){ return colorScale(v, 1.5, "fceee3", "b3551a"); }
+const STATUS_HEX = {"Sous-utilisé":["#fef3dc","#8a5c00"], "Optimal":["#e5f6e5","#0c6b0c"], "Tendu":["#fdeae1","#a34321"], "Surcharge":["#fbe4e4","#b02a2a"]};
+
+/* ---------------------------------------------------------------------
+   Rendering
+--------------------------------------------------------------------- */
+function renderAll(){
+  renderKpis();
+  renderStatusCards();
+  renderProfileTable();
+  renderTable();
+}
+
+function renderKpis(){
+  const n = state.resources.length;
+  const nP = state.projects.length;
+  let sumAff=0, sumChg=0;
+  for(let i=0;i<n;i++){
+    const {totalAff, totalChg} = computeResourceRow(i);
+    sumAff += totalAff; sumChg += totalChg;
+  }
+  const avgAff = n? sumAff/n : 0;
+  const avgChg = n? sumChg/n : 0;
+  const kpis = [
+    ["Ressources actives", n],
+    ["Projets actifs", nP],
+    ["Affectation moyenne", fmtPct(avgAff)],
+    ["Chargeabilité totale moyenne", fmtPct(avgChg)],
+  ];
+  const el = document.getElementById("kpis");
+  el.innerHTML = kpis.map(([label,val]) =>
+    `<div class="kpi"><div class="label">${label}</div><div class="value">${val}</div></div>`
+  ).join("");
+}
+
+function computeStatusCounts(kind){
+  // kind: 'aff' or 'chg'
+  const counts = {"Sous-utilisé":0,"Optimal":0,"Tendu":0,"Surcharge":0};
+  state.resources.forEach((res, ri) => {
+    const {totalAff, totalChg} = computeResourceRow(ri);
+    const v = kind === "aff" ? totalAff : totalChg;
+    counts[statusFor(v).label]++;
+  });
+  return counts;
+}
+
+function renderStatusCards(){
+  const el = document.getElementById("statusCards");
+  const affCounts = computeStatusCounts("aff");
+  const chgCounts = computeStatusCounts("chg");
+  function card(title, counts){
+    const chips = STATUS_ORDER.map(label => {
+      const [bg,fg] = STATUS_HEX[label];
+      return `<div class="status-chip" style="background:${bg};color:${fg}">${label}<br>${counts[label]}</div>`;
+    }).join("");
+    return `<div class="status-card"><div class="title">${title}</div><div class="status-chip-row">${chips}</div></div>`;
+  }
+  el.innerHTML = card("Statuts — Affectation", affCounts) + card("Statuts — Chargeabilité totale", chgCounts);
+}
+
+function renderProfileTable(){
+  const groups = {};
+  state.resources.forEach((res, ri) => {
+    const type = res.type || "(sans type)";
+    if(!groups[type]) groups[type] = {count:0, sumAff:0, sumChg:0, surAff:0, surChg:0};
+    const g = groups[type];
+    const {totalAff, totalChg} = computeResourceRow(ri);
+    g.count++; g.sumAff += totalAff; g.sumChg += totalChg;
+    if(statusFor(totalAff).label === "Surcharge") g.surAff++;
+    if(statusFor(totalChg).label === "Surcharge") g.surChg++;
+  });
+  const typeOrder = state.types.filter(t => groups[t]).concat(Object.keys(groups).filter(t => !state.types.includes(t)));
+  let html = `<thead><tr><th>Type</th><th>Effectif</th><th>Affectation moy.</th><th>Chargeabilité moy.</th><th>Surcharge (aff.)</th><th>Surcharge (charge)</th></tr></thead><tbody>`;
+  typeOrder.forEach(type => {
+    const g = groups[type];
+    html += `<tr><td>${escapeHtml(type)}</td><td>${g.count}</td><td>${fmtPct(g.sumAff/g.count)}</td><td>${fmtPct(g.sumChg/g.count)}</td><td>${g.surAff}</td><td>${g.surChg}</td></tr>`;
+  });
+  if(typeOrder.length === 0) html += `<tr><td colspan="6" style="color:var(--muted);">Aucune ressource.</td></tr>`;
+  html += `</tbody>`;
+  document.getElementById("profileTable").innerHTML = html;
+}
+
+function typeOptionsHtml(current){
+  let opts = state.types.map(t => `<option value="${escapeHtml(t)}" ${t===current?"selected":""}>${escapeHtml(t)}</option>`).join("");
+  if(current && !state.types.includes(current)) opts += `<option value="${escapeHtml(current)}" selected>${escapeHtml(current)}</option>`;
+  return opts;
+}
+function phaseOptionsHtml(current){
+  let opts = state.phases.map(p => `<option value="${escapeHtml(p)}" ${p===current?"selected":""}>${escapeHtml(p)}</option>`).join("");
+  if(current && !state.phases.includes(current)) opts += `<option value="${escapeHtml(current)}" selected>${escapeHtml(current)}</option>`;
+  return opts;
+}
+
+function renderTable(){
+  const thead = document.querySelector("#matrice thead");
+  const tbody = document.querySelector("#matrice tbody");
+  const tfoot = document.querySelector("#matrice tfoot");
+
+  // --- header ---
+  let projRow = `<tr class="proj-row"><th class="rowlabel-head" rowspan="2">Ressource</th>`;
+  state.projects.forEach((p, pj) => {
+    projRow += `<th class="projhead" colspan="2" draggable="true" data-pj="${pj}"
+        ondragstart="onColDragStart(event,${pj})" ondragover="onColDragOver(event,${pj})"
+        ondragleave="onColDragLeave(event)" ondrop="onColDrop(event,${pj})" ondragend="onDragEnd()">
+      <div class="phead-top">
+        <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
+        <input class="proj-name-input" value="${escapeHtml(p.name)}" onchange="renameProject(${pj},this.value)">
+        <span class="pm" title="Retirer ce projet" onclick="removeProject(${pj})">✕</span>
+      </div>
+      <select class="proj-phase-select" onchange="setProjectPhase(${pj},this.value)">${phaseOptionsHtml(p.phase)}</select>
+    </th>`;
+  });
+  projRow += `<th rowspan="2">Total<br>affecté</th><th rowspan="2">Statut</th><th rowspan="2">Chargeab.<br>totale</th><th rowspan="2">Écart</th><th rowspan="2">Statut</th></tr>`;
+
+  let subRow = `<tr>`;
+  state.projects.forEach(() => {
+    subRow += `<th style="min-width:56px;">Affecté</th><th style="min-width:56px;">Charge</th>`;
+  });
+  subRow += `</tr>`;
+  thead.innerHTML = projRow + subRow;
+
+  // --- body ---
+  let body = "";
+  state.resources.forEach((res, ri) => {
+    const {totalAff, totalChg, ecart} = computeResourceRow(ri);
+    const stAff = statusFor(totalAff);
+    const stChg = statusFor(totalChg);
+    body += `<tr draggable="true" data-ri="${ri}"
+        ondragstart="onRowDragStart(event,${ri})" ondragover="onRowDragOver(event,${ri})"
+        ondragleave="onRowDragLeave(event)" ondrop="onRowDrop(event,${ri})" ondragend="onDragEnd()">`;
+    body += `<td class="rowlabel">
+        <div class="rtop">
+          <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
+          <input class="name-input" value="${escapeHtml(res.name)}" onchange="renameResource(${ri},this.value)">
+          <span class="rm" title="Retirer cette ressource" onclick="removeResource(${ri})">✕</span>
+        </div>
+        <select class="type-select" onchange="setResourceType(${ri},this.value)">${typeOptionsHtml(res.type)}</select>
+        <input class="role-input" value="${escapeHtml(res.role||"")}" placeholder="Rôle" onchange="setResourceRole(${ri},this.value)">
+      </td>`;
+    state.projects.forEach((p, pj) => {
+      const cell = state.alloc[ri][pj] || [null,null];
+      const aff = cell[0], chg = cell[1];
+      const affBg = aff!=null ? affColor(aff) : "";
+      const chgBg = chg!=null ? chgColor(chg) : "";
+      body += `<td class="aff-cell" style="background:${affBg||"var(--blue-light)"}">
+          <input class="cell-input" type="number" min="0" max="300" step="5"
+            value="${aff!=null? Math.round(aff*100): ""}"
+            oninput="onCellInput(${ri},${pj},0,this.value)">
+        </td>`;
+      body += `<td class="chg-cell" style="background:${chgBg||"var(--orange-light)"}">
+          <input class="cell-input" type="number" min="0" max="300" step="5"
+            value="${chg!=null? Math.round(chg*100): ""}"
+            oninput="onCellInput(${ri},${pj},1,this.value)">
+        </td>`;
+    });
+    body += `<td class="total-cell" id="tot-aff-${ri}">${fmtPct(totalAff)}</td>`;
+    body += `<td class="status-cell" id="stat-aff-${ri}"><span class="${stAff.cls}">${stAff.label}</span></td>`;
+    body += `<td class="total-cell" id="tot-chg-${ri}">${fmtPct(totalChg)}</td>`;
+    body += `<td class="total-cell" id="ecart-${ri}">${ecart>=0?"+":""}${fmtPct(ecart)}</td>`;
+    body += `<td class="status-cell" id="stat-chg-${ri}"><span class="${stChg.cls}">${stChg.label}</span></td>`;
+    body += `</tr>`;
+  });
+  tbody.innerHTML = body;
+
+  // --- footer: total projet ---
+  let foot = `<tr><td class="rowlabel">Total projet</td>`;
+  state.projects.forEach((p, pj) => {
+    const {totalAff, totalChg} = computeProjectTotals(pj);
+    foot += `<td id="totcol-aff-${pj}">${fmtPct(totalAff)}</td><td id="totcol-chg-${pj}">${fmtPct(totalChg)}</td>`;
+  });
+  foot += `<td colspan="5"></td></tr>`;
+  tfoot.innerHTML = foot;
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* ---------------------------------------------------------------------
+   Cell edits — incremental update (keeps focus, no full repaint)
+--------------------------------------------------------------------- */
+function onCellInput(ri, pj, kind, rawValue){
+  const v = rawValue === "" ? null : Math.max(0, parseFloat(rawValue))/100;
+  if(!state.alloc[ri][pj]) state.alloc[ri][pj] = [null,null];
+  state.alloc[ri][pj][kind] = (rawValue==="" ? null : (isNaN(v)?null:v));
+
+  const td = event.target.closest("td");
+  if(kind===0){ td.style.background = state.alloc[ri][pj][0]!=null ? affColor(state.alloc[ri][pj][0]) : "var(--blue-light)"; }
+  else{ td.style.background = state.alloc[ri][pj][1]!=null ? chgColor(state.alloc[ri][pj][1]) : "var(--orange-light)"; }
+
+  const {totalAff, totalChg, ecart} = computeResourceRow(ri);
+  const stAff = statusFor(totalAff), stChg = statusFor(totalChg);
+  document.getElementById(`tot-aff-${ri}`).textContent = fmtPct(totalAff);
+  document.getElementById(`stat-aff-${ri}`).innerHTML = `<span class="${stAff.cls}">${stAff.label}</span>`;
+  document.getElementById(`tot-chg-${ri}`).textContent = fmtPct(totalChg);
+  document.getElementById(`ecart-${ri}`).textContent = (ecart>=0?"+":"") + fmtPct(ecart);
+  document.getElementById(`stat-chg-${ri}`).innerHTML = `<span class="${stChg.cls}">${stChg.label}</span>`;
+
+  const {totalAff:colAff, totalChg:colChg} = computeProjectTotals(pj);
+  document.getElementById(`totcol-aff-${pj}`).textContent = fmtPct(colAff);
+  document.getElementById(`totcol-chg-${pj}`).textContent = fmtPct(colChg);
+
+  renderKpis();
+  renderStatusCards();
+  renderProfileTable();
+  saveState();
+}
+
+/* ---------------------------------------------------------------------
+   Inline edits: name / type / role / phase
+--------------------------------------------------------------------- */
+function renameResource(ri, value){
+  state.resources[ri].name = value.trim() || state.resources[ri].name;
+  saveState();
+}
+function setResourceRole(ri, value){
+  state.resources[ri].role = value.trim();
+  saveState();
+}
+function setResourceType(ri, value){
+  state.resources[ri].type = value;
+  renderProfileTable();
+  saveState();
+}
+function renameProject(pj, value){
+  state.projects[pj].name = value.trim() || state.projects[pj].name;
+  saveState();
+}
+function setProjectPhase(pj, value){
+  state.projects[pj].phase = value;
+  saveState();
+}
+
+/* ---------------------------------------------------------------------
+   Add / remove resources & projects
+--------------------------------------------------------------------- */
+function openModal(id){ document.getElementById(id).classList.add("open"); }
+function closeModal(id){ document.getElementById(id).classList.remove("open"); }
+
+function populateAddModals(){
+  document.getElementById("newResType").innerHTML = typeOptionsHtml(state.types[0]);
+  document.getElementById("newProjPhase").innerHTML = phaseOptionsHtml(state.phases[0]);
+}
+
+function confirmAddResource(){
+  const name = document.getElementById("newResName").value.trim();
+  if(!name){ alert("Merci de saisir un nom."); return; }
+  const type = document.getElementById("newResType").value;
+  const role = document.getElementById("newResRole").value.trim();
+  state.resources.push({name, type, role});
+  state.alloc.push(new Array(state.projects.length).fill(null));
+  document.getElementById("newResName").value = "";
+  document.getElementById("newResRole").value = "";
+  closeModal("modalRes");
+  renderAll();
+  saveState();
+}
+
+function confirmAddProject(){
+  const name = document.getElementById("newProjName").value.trim();
+  if(!name){ alert("Merci de saisir un nom."); return; }
+  const phase = document.getElementById("newProjPhase").value;
+  state.projects.push({name, phase});
+  state.alloc.forEach(row => row.push(null));
+  document.getElementById("newProjName").value = "";
+  closeModal("modalProj");
+  renderAll();
+  saveState();
+}
+
+function removeResource(ri){
+  if(!confirm(`Retirer "${state.resources[ri].name}" du tableau ?`)) return;
+  state.resources.splice(ri,1);
+  state.alloc.splice(ri,1);
+  renderAll();
+  saveState();
+}
+
+function removeProject(pj){
+  if(!confirm(`Retirer le projet "${state.projects[pj].name}" du tableau ?`)) return;
+  state.projects.splice(pj,1);
+  state.alloc.forEach(row => row.splice(pj,1));
+  renderAll();
+  saveState();
+}
+
+/* ---------------------------------------------------------------------
+   Drag & drop reordering
+--------------------------------------------------------------------- */
+function moveArrayItem(arr, from, to){
+  const item = arr.splice(from,1)[0];
+  arr.splice(to,0,item);
+}
+
+function onRowDragStart(e, ri){
+  dragCtx = {kind:"res", from:ri};
+  e.dataTransfer.effectAllowed = "move";
+  e.dataTransfer.setData("text/plain", String(ri));
+}
+function onRowDragOver(e, ri){
+  if(!dragCtx || dragCtx.kind!=="res") return;
+  e.preventDefault();
+  e.currentTarget.classList.add("drag-over-row");
+}
+function onRowDragLeave(e){ e.currentTarget.classList.remove("drag-over-row"); }
+function onRowDrop(e, ri){
+  e.preventDefault();
+  e.currentTarget.classList.remove("drag-over-row");
+  if(!dragCtx || dragCtx.kind!=="res") return;
+  const from = dragCtx.from;
+  if(from !== ri){
+    moveArrayItem(state.resources, from, ri);
+    moveArrayItem(state.alloc, from, ri);
+    renderAll();
+    saveState();
+  }
+  dragCtx = null;
+}
+
+function onColDragStart(e, pj){
+  dragCtx = {kind:"proj", from:pj};
+  e.dataTransfer.effectAllowed = "move";
+  e.dataTransfer.setData("text/plain", String(pj));
+}
+function onColDragOver(e, pj){
+  if(!dragCtx || dragCtx.kind!=="proj") return;
+  e.preventDefault();
+  e.currentTarget.classList.add("drag-over-col");
+}
+function onColDragLeave(e){ e.currentTarget.classList.remove("drag-over-col"); }
+function onColDrop(e, pj){
+  e.preventDefault();
+  e.currentTarget.classList.remove("drag-over-col");
+  if(!dragCtx || dragCtx.kind!=="proj") return;
+  const from = dragCtx.from;
+  if(from !== pj){
+    moveArrayItem(state.projects, from, pj);
+    state.alloc.forEach(row => moveArrayItem(row, from, pj));
+    renderAll();
+    saveState();
+  }
+  dragCtx = null;
+}
+function onDragEnd(){ dragCtx = null; }
+
+/* ---------------------------------------------------------------------
+   Manage lists (types / phases)
+--------------------------------------------------------------------- */
+function renderListsModal(){
+  const typesWrap = document.getElementById("typesListWrap");
+  typesWrap.innerHTML = state.types.map((t, i) => `
+    <div class="list-item">
+      <input value="${escapeHtml(t)}" onchange="renameType(${i}, this.value)">
+      <span class="del" title="Retirer ce type" onclick="deleteType(${i})">✕</span>
+    </div>`).join("") || `<p style="color:var(--muted);font-size:12px;">Aucun type.</p>`;
+
+  const phasesWrap = document.getElementById("phasesListWrap");
+  phasesWrap.innerHTML = state.phases.map((p, i) => `
+    <div class="list-item">
+      <input value="${escapeHtml(p)}" onchange="renamePhase(${i}, this.value)">
+      <span class="del" title="Retirer cette phase" onclick="deletePhase(${i})">✕</span>
+    </div>`).join("") || `<p style="color:var(--muted);font-size:12px;">Aucune phase.</p>`;
+}
+
+function renameType(i, value){
+  value = value.trim();
+  if(!value) { renderListsModal(); return; }
+  const old = state.types[i];
+  state.types[i] = value;
+  state.resources.forEach(r => { if(r.type === old) r.type = value; });
+  renderListsModal();
+  renderAll();
+  saveState();
+}
+function deleteType(i){
+  const t = state.types[i];
+  const used = state.resources.some(r => r.type === t);
+  if(used && !confirm(`"${t}" est utilisé par au moins une ressource. Le retirer de la liste des types proposés (les ressources concernées garderont ce libellé) ?`)) return;
+  state.types.splice(i,1);
+  renderListsModal();
+  renderAll();
+  saveState();
+}
+function addType(){
+  const input = document.getElementById("newTypeInput");
+  const value = input.value.trim();
+  if(!value) return;
+  if(state.types.includes(value)){ alert("Ce type existe déjà."); return; }
+  state.types.push(value);
+  input.value = "";
+  renderListsModal();
+  saveState();
+}
+
+function renamePhase(i, value){
+  value = value.trim();
+  if(!value) { renderListsModal(); return; }
+  const old = state.phases[i];
+  state.phases[i] = value;
+  state.projects.forEach(p => { if(p.phase === old) p.phase = value; });
+  renderListsModal();
+  renderAll();
+  saveState();
+}
+function deletePhase(i){
+  const p = state.phases[i];
+  const used = state.projects.some(pr => pr.phase === p);
+  if(used && !confirm(`"${p}" est utilisée par au moins un projet. La retirer de la liste des phases proposées (les projets concernés garderont ce libellé) ?`)) return;
+  state.phases.splice(i,1);
+  renderListsModal();
+  renderAll();
+  saveState();
+}
+function addPhase(){
+  const input = document.getElementById("newPhaseInput");
+  const value = input.value.trim();
+  if(!value) return;
+  if(state.phases.includes(value)){ alert("Cette phase existe déjà."); return; }
+  state.phases.push(value);
+  input.value = "";
+  renderListsModal();
+  saveState();
+}
+
+/* ---------------------------------------------------------------------
+   Export: JSON backup / import / reset
+--------------------------------------------------------------------- */
+function downloadBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function tsStamp(){ return new Date().toISOString().slice(0,10); }
+
+function exportBackup(){
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+  downloadBlob(blob, `dashboard_ressources_sauvegarde_${tsStamp()}.json`);
+}
+
+function importBackup(file){
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const parsed = JSON.parse(e.target.result);
+      if(!parsed.resources || !parsed.projects || !parsed.alloc) throw new Error("format invalide");
+      if(!Array.isArray(parsed.types) || !parsed.types.length) parsed.types = DEFAULT_TYPES.slice();
+      if(!Array.isArray(parsed.phases) || !parsed.phases.length) parsed.phases = DEFAULT_PHASES.slice();
+      state = parsed;
+      renderAll();
+      saveState();
+      setSaveStatus("Sauvegarde importée avec succès.");
+    }catch(err){
+      alert("Ce fichier ne semble pas être une sauvegarde valide de ce tableau.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetToSeed(){
+  if(!confirm("Réinitialiser toutes les données aux valeurs d'exemple ? Les modifications non exportées seront perdues.")) return;
+  state = cloneData(SEED_DATA);
+  renderAll();
+  saveState();
+}
+
+/* ---------------------------------------------------------------------
+   Export: CSV
+--------------------------------------------------------------------- */
+function csvEscape(v){
+  const s = String(v==null?"":v);
+  if(/[",\n;]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+function buildMatrixRows(){
+  const header = ["Ressource","Type","Rôle"];
+  state.projects.forEach(p => { header.push(`${p.name} - Affecté (%)`, `${p.name} - Chargeabilité (%)`); });
+  header.push("Total affecté (%)","Statut affectation","Chargeabilité totale (%)","Écart (%)","Statut chargeabilité");
+  const rows = [header];
+  state.resources.forEach((res, ri) => {
+    const {totalAff, totalChg, ecart} = computeResourceRow(ri);
+    const row = [res.name, res.type||"", res.role||""];
+    state.projects.forEach((p, pj) => {
+      const cell = state.alloc[ri][pj] || [null,null];
+      row.push(cell[0]!=null? Math.round(cell[0]*100): "", cell[1]!=null? Math.round(cell[1]*100): "");
+    });
+    row.push(Math.round(totalAff*100), statusFor(totalAff).label, Math.round(totalChg*100), Math.round(ecart*100), statusFor(totalChg).label);
+    rows.push(row);
+  });
+  const footer = ["Total projet","",""];
+  state.projects.forEach((p, pj) => {
+    const {totalAff, totalChg} = computeProjectTotals(pj);
+    footer.push(Math.round(totalAff*100), Math.round(totalChg*100));
+  });
+  footer.push("","","","","");
+  rows.push(footer);
+  return rows;
+}
+
+function exportCsv(){
+  const rows = buildMatrixRows();
+  const csv = rows.map(r => r.map(csvEscape).join(",")).join("\r\n");
+  const blob = new Blob(["﻿" + csv], {type:"text/csv;charset=utf-8"});
+  downloadBlob(blob, `dashboard_ressources_matrice_${tsStamp()}.csv`);
+}
+
+/* ---------------------------------------------------------------------
+   Export: Excel (.xls, SpreadsheetML — no external library needed)
+--------------------------------------------------------------------- */
+function xmlEscape(s){
+  return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");
+}
+function xlsCell(v){
+  if(typeof v === "number" && isFinite(v)) return `<Cell><Data ss:Type="Number">${v}</Data></Cell>`;
+  return `<Cell><Data ss:Type="String">${xmlEscape(v)}</Data></Cell>`;
+}
+function xlsSheet(name, rows){
+  const rowsXml = rows.map((r,ri) => {
+    const styleAttr = ri===0 ? ' ss:StyleID="Header"' : "";
+    return `<Row${styleAttr}>${r.map(xlsCell).join("")}</Row>`;
+  }).join("");
+  return `<Worksheet ss:Name="${xmlEscape(name.slice(0,31))}"><Table>${rowsXml}</Table></Worksheet>`;
+}
+function buildResourcesSheetRows(){
+  const rows = [["Ressource","Type","Rôle","Total affecté (%)","Statut","Chargeabilité totale (%)","Écart (%)","Statut"]];
+  state.resources.forEach((res, ri) => {
+    const {totalAff, totalChg, ecart} = computeResourceRow(ri);
+    rows.push([res.name, res.type||"", res.role||"", Math.round(totalAff*100), statusFor(totalAff).label, Math.round(totalChg*100), Math.round(ecart*100), statusFor(totalChg).label]);
+  });
+  return rows;
+}
+function buildProjectsSheetRows(){
+  const rows = [["Projet","Phase","Total affecté (%)","Chargeabilité totale (%)"]];
+  state.projects.forEach((p, pj) => {
+    const {totalAff, totalChg} = computeProjectTotals(pj);
+    rows.push([p.name, p.phase||"", Math.round(totalAff*100), Math.round(totalChg*100)]);
+  });
+  return rows;
+}
+function buildResumeSheetRows(){
+  const n = state.resources.length;
+  let sumAff=0, sumChg=0;
+  for(let i=0;i<n;i++){ const {totalAff,totalChg} = computeResourceRow(i); sumAff+=totalAff; sumChg+=totalChg; }
+  const affCounts = computeStatusCounts("aff");
+  const chgCounts = computeStatusCounts("chg");
+  const rows = [["Indicateur","Valeur"]];
+  rows.push(["Ressources actives", n]);
+  rows.push(["Projets actifs", state.projects.length]);
+  rows.push(["Affectation moyenne (%)", n? Math.round(sumAff/n*100):0]);
+  rows.push(["Chargeabilité totale moyenne (%)", n? Math.round(sumChg/n*100):0]);
+  STATUS_ORDER.forEach(l => rows.push([`Affectation — ${l}`, affCounts[l]]));
+  STATUS_ORDER.forEach(l => rows.push([`Chargeabilité — ${l}`, chgCounts[l]]));
+  return rows;
+}
+function exportExcel(){
+  const sheets = [
+    {name:"Résumé", rows: buildResumeSheetRows()},
+    {name:"Ressources", rows: buildResourcesSheetRows()},
+    {name:"Projets", rows: buildProjectsSheetRows()},
+    {name:"Matrice", rows: buildMatrixRows()},
+  ];
+  const sheetsXml = sheets.map(s => xlsSheet(s.name, s.rows)).join("");
+  const xml = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Styles><Style ss:ID="Header"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#1C3D63" ss:Pattern="Solid"/></Style></Styles>
+${sheetsXml}
+</Workbook>`;
+  const blob = new Blob([xml], {type:"application/vnd.ms-excel"});
+  downloadBlob(blob, `dashboard_ressources_${tsStamp()}.xls`);
+}
+
+/* ---------------------------------------------------------------------
+   Export: printable report (new tab)
+--------------------------------------------------------------------- */
+function exportPrint(){
+  const win = window.open("", "_blank");
+  if(!win){ alert("Le navigateur a bloqué l'ouverture du nouvel onglet — autorise les pop-ups pour ce fichier."); return; }
+  const n = state.resources.length;
+  let sumAff=0, sumChg=0;
+  for(let i=0;i<n;i++){ const {totalAff,totalChg} = computeResourceRow(i); sumAff+=totalAff; sumChg+=totalChg; }
+  const affCounts = computeStatusCounts("aff");
+  const chgCounts = computeStatusCounts("chg");
+
+  let tableHead = `<tr><th>Ressource</th><th>Type</th><th>Rôle</th>`;
+  state.projects.forEach(p => { tableHead += `<th colspan="2">${escapeHtml(p.name)}<br><span class="ph">${escapeHtml(p.phase||"")}</span></th>`; });
+  tableHead += `<th>Total affecté</th><th>Statut</th><th>Chargeab. totale</th><th>Écart</th><th>Statut</th></tr>`;
+  let subHead = `<tr><th></th><th></th><th></th>`;
+  state.projects.forEach(() => { subHead += `<th>Aff.</th><th>Charge</th>`; });
+  subHead += `<th></th><th></th><th></th><th></th><th></th></tr>`;
+
+  let bodyRows = "";
+  state.resources.forEach((res, ri) => {
+    const {totalAff, totalChg, ecart} = computeResourceRow(ri);
+    const stAff = statusFor(totalAff), stChg = statusFor(totalChg);
+    bodyRows += `<tr><td class="lbl">${escapeHtml(res.name)}</td><td>${escapeHtml(res.type||"")}</td><td>${escapeHtml(res.role||"")}</td>`;
+    state.projects.forEach((p, pj) => {
+      const cell = state.alloc[ri][pj] || [null,null];
+      bodyRows += `<td>${cell[0]!=null? fmtPct(cell[0]):""}</td><td>${cell[1]!=null? fmtPct(cell[1]):""}</td>`;
+    });
+    bodyRows += `<td class="tot">${fmtPct(totalAff)}</td><td>${stAff.label}</td><td class="tot">${fmtPct(totalChg)}</td><td>${(ecart>=0?"+":"")+fmtPct(ecart)}</td><td>${stChg.label}</td></tr>`;
+  });
+  let footRow = `<tr class="foot"><td colspan="3">Total projet</td>`;
+  state.projects.forEach((p, pj) => {
+    const {totalAff, totalChg} = computeProjectTotals(pj);
+    footRow += `<td>${fmtPct(totalAff)}</td><td>${fmtPct(totalChg)}</td>`;
+  });
+  footRow += `<td colspan="5"></td></tr>`;
+
+  const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Rapport — Dashboard Ressources PMO AKIENI</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif; color:#2c333a; margin:24px; font-size:11px;}
+    h1{color:#1c3d63; font-size:18px; margin-bottom:2px;}
+    .sub{color:#767f89; margin-bottom:18px;}
+    .kpirow{display:flex; gap:16px; margin-bottom:16px; flex-wrap:wrap;}
+    .kpi{border:1px solid #dfe3e8; border-radius:6px; padding:8px 14px;}
+    .kpi .l{font-size:9px; color:#767f89; text-transform:uppercase;}
+    .kpi .v{font-size:18px; font-weight:700; color:#1c3d63;}
+    table{border-collapse:collapse; width:100%; font-size:9.5px; margin-bottom:22px;}
+    th,td{border:1px solid #dfe3e8; padding:3px 5px; text-align:center;}
+    th{background:#1c3d63; color:#fff;}
+    td.lbl{text-align:left; font-weight:600;}
+    td.tot{font-weight:700; background:#f4f5f7;}
+    tr.foot{font-weight:700; background:#eef0f3;}
+    .ph{font-weight:400; font-size:8px; color:#cfe0f2;}
+    @media print{ .noprint{display:none;} body{margin:10px;} }
+    .noprint{margin-bottom:16px;}
+    .noprint button{padding:8px 16px; font-size:13px; background:#1c3d63; color:#fff; border:none; border-radius:6px; cursor:pointer;}
+  </style></head><body>
+  <div class="noprint"><button onclick="window.print()">Imprimer / Enregistrer en PDF</button></div>
+  <h1>Dashboard Ressources — Portefeuille PMO AKIENI</h1>
+  <p class="sub">Rapport généré le ${new Date().toLocaleString("fr-FR")}</p>
+  <div class="kpirow">
+    <div class="kpi"><div class="l">Ressources actives</div><div class="v">${n}</div></div>
+    <div class="kpi"><div class="l">Projets actifs</div><div class="v">${state.projects.length}</div></div>
+    <div class="kpi"><div class="l">Affectation moyenne</div><div class="v">${n? fmtPct(sumAff/n):"0%"}</div></div>
+    <div class="kpi"><div class="l">Chargeabilité totale moyenne</div><div class="v">${n? fmtPct(sumChg/n):"0%"}</div></div>
+    <div class="kpi"><div class="l">Surcharge (affectation)</div><div class="v">${affCounts["Surcharge"]}</div></div>
+    <div class="kpi"><div class="l">Surcharge (chargeabilité)</div><div class="v">${chgCounts["Surcharge"]}</div></div>
+  </div>
+  <table><thead>${tableHead}${subHead}</thead><tbody>${bodyRows}${footRow}</tbody></table>
+  </body></html>`;
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+}
+
+/* ---------------------------------------------------------------------
+   Export: image (PNG) via canvas
+--------------------------------------------------------------------- */
+function exportImage(){
+  const nRes = state.resources.length, nProj = state.projects.length;
+  const rowLabelW = 190, cellW = 54, extraW = [78,86,86,64,86];
+  const rowH = 24, headH = 44, subHeadH = 18, kpiH = 60, titleH = 46;
+  const tableW = rowLabelW + nProj*2*cellW + extraW.reduce((a,b)=>a+b,0);
+  const width = Math.max(tableW + 40, 900);
+  const height = titleH + kpiH + headH + subHeadH + nRes*rowH + rowH + 30;
+
+  const canvas = document.createElement("canvas");
+  const scale = 2;
+  canvas.width = width*scale; canvas.height = height*scale;
+  canvas.style.width = width+"px"; canvas.style.height = height+"px";
+  const ctx = canvas.getContext("2d");
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0,0,width,height);
+
+  // title
+  ctx.fillStyle = "#1c3d63";
+  ctx.font = "bold 17px Arial";
+  ctx.fillText("Dashboard Ressources — Portefeuille PMO AKIENI", 16, 24);
+  ctx.fillStyle = "#767f89";
+  ctx.font = "11px Arial";
+  ctx.fillText("Généré le " + new Date().toLocaleString("fr-FR"), 16, 40);
+
+  // KPIs
+  let sumAff=0,sumChg=0;
+  for(let i=0;i<nRes;i++){ const {totalAff,totalChg}=computeResourceRow(i); sumAff+=totalAff; sumChg+=totalChg; }
+  const kpis = [
+    ["Ressources", String(nRes)],
+    ["Projets", String(nProj)],
+    ["Affect. moy.", nRes? fmtPct(sumAff/nRes):"0%"],
+    ["Charg. moy.", nRes? fmtPct(sumChg/nRes):"0%"],
+  ];
+  let kx = 16;
+  kpis.forEach(([label,val]) => {
+    const kw = 130;
+    ctx.strokeStyle = "#dfe3e8"; ctx.strokeRect(kx, titleH, kw, kpiH-10);
+    ctx.fillStyle = "#767f89"; ctx.font = "9px Arial"; ctx.fillText(label.toUpperCase(), kx+10, titleH+18);
+    ctx.fillStyle = "#1c3d63"; ctx.font = "bold 18px Arial"; ctx.fillText(val, kx+10, titleH+38);
+    kx += kw + 10;
+  });
+
+  const tableTop = titleH + kpiH;
+  let x0 = 16;
+  // header row 1: project names
+  ctx.fillStyle = "#1c3d63"; ctx.fillRect(x0, tableTop, rowLabelW, headH);
+  ctx.fillStyle = "#fff"; ctx.font = "bold 11px Arial"; ctx.textBaseline = "middle";
+  ctx.fillText("Ressource", x0+8, tableTop+headH/2);
+  let x = x0 + rowLabelW;
+  const colX = []; // start x of each project's affecte column
+  state.projects.forEach(p => {
+    const w = cellW*2;
+    ctx.fillStyle = "#2a4d7a"; ctx.fillRect(x, tableTop, w, headH);
+    ctx.fillStyle = "#fff"; ctx.font = "bold 10px Arial";
+    wrapCanvasText(ctx, p.name, x+w/2, tableTop+16, w-6);
+    ctx.fillStyle = "#cfe0f2"; ctx.font = "8px Arial"; ctx.textAlign="center";
+    ctx.fillText(truncate(p.phase||"",22), x+w/2, tableTop+headH-6);
+    ctx.textAlign = "left";
+    colX.push(x);
+    x += w;
+  });
+  const extraLabels = ["Total affecté","Statut","Chargeab. totale","Écart","Statut"];
+  const extraX = [];
+  extraLabels.forEach((lab,i) => {
+    const w = extraW[i];
+    ctx.fillStyle = "#1c3d63"; ctx.fillRect(x, tableTop, w, headH);
+    ctx.fillStyle = "#fff"; ctx.font = "bold 9px Arial"; ctx.textAlign="center";
+    wrapCanvasText(ctx, lab, x+w/2, tableTop+16, w-4);
+    ctx.textAlign = "left";
+    extraX.push(x);
+    x += w;
+  });
+  // sub-header row
+  const subTop = tableTop + headH;
+  x = x0 + rowLabelW;
+  state.projects.forEach(() => {
+    ctx.fillStyle = "#2a4d7a"; ctx.fillRect(x, subTop, cellW*2, subHeadH);
+    ctx.fillStyle = "#fff"; ctx.font = "9px Arial"; ctx.textAlign="center";
+    ctx.fillText("Affecté", x+cellW/2, subTop+subHeadH/2+3);
+    ctx.fillText("Charge", x+cellW+cellW/2, subTop+subHeadH/2+3);
+    ctx.textAlign = "left";
+    x += cellW*2;
+  });
+  ctx.fillStyle = "#2a4d7a"; ctx.fillRect(x0, subTop, rowLabelW, subHeadH);
+  extraX.forEach(ex => { ctx.fillStyle = "#2a4d7a"; ctx.fillRect(ex, subTop, extraW[extraX.indexOf(ex)], subHeadH); });
+
+  // rows
+  let y = subTop + subHeadH;
+  state.resources.forEach((res, ri) => {
+    const {totalAff, totalChg, ecart} = computeResourceRow(ri);
+    const stAff = statusFor(totalAff), stChg = statusFor(totalChg);
+    ctx.strokeStyle = "#dfe3e8";
+    ctx.fillStyle = ri%2? "#fafbfc":"#ffffff";
+    ctx.fillRect(x0, y, tableW, rowH);
+    ctx.strokeRect(x0, y, rowLabelW, rowH);
+    ctx.fillStyle = "#2c333a"; ctx.font = "bold 10px Arial"; ctx.textAlign="left";
+    ctx.fillText(truncate(res.name,26), x0+8, y+rowH/2+3);
+
+    state.projects.forEach((p, pj) => {
+      const cell = state.alloc[ri][pj] || [null,null];
+      const cx = colX[pj];
+      ctx.fillStyle = cell[0]!=null ? affColor(cell[0]) : "#eaf1fb";
+      ctx.fillRect(cx, y, cellW, rowH);
+      ctx.fillStyle = cell[1]!=null ? chgColor(cell[1]) : "#fceee3";
+      ctx.fillRect(cx+cellW, y, cellW, rowH);
+      ctx.fillStyle = "#2c333a"; ctx.font = "10px Arial"; ctx.textAlign = "center";
+      if(cell[0]!=null) ctx.fillText(fmtPct(cell[0]), cx+cellW/2, y+rowH/2+3);
+      if(cell[1]!=null) ctx.fillText(fmtPct(cell[1]), cx+cellW+cellW/2, y+rowH/2+3);
+      ctx.strokeRect(cx, y, cellW, rowH); ctx.strokeRect(cx+cellW, y, cellW, rowH);
+    });
+
+    const vals = [fmtPct(totalAff), stAff.label, fmtPct(totalChg), (ecart>=0?"+":"")+fmtPct(ecart), stChg.label];
+    vals.forEach((val,i) => {
+      const ex = extraX[i], w = extraW[i];
+      ctx.strokeRect(ex, y, w, rowH);
+      ctx.fillStyle = "#fafbfc"; ctx.fillRect(ex, y, w, rowH);
+      ctx.fillStyle = "#2c333a"; ctx.font = "bold 9.5px Arial"; ctx.textAlign="center";
+      ctx.fillText(truncate(val,14), ex+w/2, y+rowH/2+3);
+    });
+    ctx.textAlign = "left";
+    y += rowH;
+  });
+
+  // total projet row
+  ctx.fillStyle = "#eef0f3"; ctx.fillRect(x0, y, tableW, rowH);
+  ctx.strokeRect(x0, y, rowLabelW, rowH);
+  ctx.fillStyle = "#2c333a"; ctx.font = "bold 10px Arial"; ctx.textAlign="left";
+  ctx.fillText("Total projet", x0+8, y+rowH/2+3);
+  state.projects.forEach((p, pj) => {
+    const {totalAff, totalChg} = computeProjectTotals(pj);
+    const cx = colX[pj];
+    ctx.strokeRect(cx, y, cellW, rowH); ctx.strokeRect(cx+cellW, y, cellW, rowH);
+    ctx.fillStyle = "#2c333a"; ctx.font = "bold 9.5px Arial"; ctx.textAlign="center";
+    ctx.fillText(fmtPct(totalAff), cx+cellW/2, y+rowH/2+3);
+    ctx.fillText(fmtPct(totalChg), cx+cellW+cellW/2, y+rowH/2+3);
+  });
+  ctx.textAlign = "left";
+
+  canvas.toBlob(blob => downloadBlob(blob, `dashboard_ressources_${tsStamp()}.png`), "image/png");
+}
+
+function truncate(s, n){ s = String(s||""); return s.length>n ? s.slice(0,n-1)+"…" : s; }
+function wrapCanvasText(ctx, text, cx, y, maxWidth){
+  ctx.textAlign = "center";
+  if(ctx.measureText(text).width <= maxWidth){ ctx.fillText(text, cx, y); return; }
+  const words = text.split(" ");
+  let line1 = "", line2 = "";
+  for(const w of words){
+    if(ctx.measureText(line1+w).width < maxWidth) line1 += (line1?" ":"")+w;
+    else line2 += (line2?" ":"")+w;
+  }
+  ctx.fillText(truncate(line1, 24), cx, y-5);
+  if(line2) ctx.fillText(truncate(line2, 24), cx, y+7);
+}
+
+/* ---------------------------------------------------------------------
+   Init
+--------------------------------------------------------------------- */
+document.getElementById("btnAddRes").addEventListener("click", () => { populateAddModals(); openModal("modalRes"); });
+document.getElementById("btnAddProj").addEventListener("click", () => { populateAddModals(); openModal("modalProj"); });
+document.getElementById("btnManageLists").addEventListener("click", () => { renderListsModal(); openModal("modalLists"); });
+document.getElementById("btnReset").addEventListener("click", resetToSeed);
+document.getElementById("btnImportTrigger").addEventListener("click", () => document.getElementById("fileImport").click());
+document.getElementById("fileImport").addEventListener("change", e => {
+  if(e.target.files.length) importBackup(e.target.files[0]);
+  e.target.value = "";
+});
+
+document.getElementById("btnExportMenu").addEventListener("click", (e) => {
+  e.stopPropagation();
+  document.getElementById("exportMenu").classList.toggle("open");
+});
+document.addEventListener("click", () => document.getElementById("exportMenu").classList.remove("open"));
+document.getElementById("btnExportJson").addEventListener("click", exportBackup);
+document.getElementById("btnExportCsv").addEventListener("click", exportCsv);
+document.getElementById("btnExportExcel").addEventListener("click", exportExcel);
+document.getElementById("btnExportImage").addEventListener("click", exportImage);
+document.getElementById("btnExportPrint").addEventListener("click", exportPrint);
+
+loadState();
+renderAll();
+</script>
+</body>
+</html>
