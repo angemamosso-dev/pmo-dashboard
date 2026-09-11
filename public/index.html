@@ -1238,8 +1238,9 @@ document.getElementById("btnExportExcel").addEventListener("click", exportExcel)
 document.getElementById("btnExportImage").addEventListener("click", exportImage);
 document.getElementById("btnExportPrint").addEventListener("click", exportPrint);
 
-loadState();
-renderAll();
+loadState().then(() => {
+  renderAll();
+});
 </script>
 </body>
 </html>
