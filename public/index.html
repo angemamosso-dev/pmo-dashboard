@@ -301,10 +301,12 @@ function cloneData(obj){
 async function loadState(){
   setSaveStatus("Chargement depuis la base...");
   try {
-    const res = await fetch('/api/dashboard');
+    // "cache: 'no-store'" force le navigateur à toujours récupérer les dernières données, sans jamais utiliser d'ancienne version mémorisée
+    const res = await fetch('/api/dashboard', { cache: 'no-store' });
     const data = await res.json();
     
-    if (data && !data.error) {
+    // On vérifie que la donnée est complète (elle doit impérativement contenir l'objet "resources")
+    if (data && !data.error && data.resources) {
       state = data;
       if(!Array.isArray(state.types) || !state.types.length) state.types = DEFAULT_TYPES.slice();
       if(!Array.isArray(state.phases) || !state.phases.length) state.phases = DEFAULT_PHASES.slice();
@@ -312,10 +314,12 @@ async function loadState(){
       return;
     }
   } catch (e) {
-    console.error(e);
-    setSaveStatus("Erreur de connexion. Chargement exemple.");
+    console.error("Erreur de chargement :", e);
   }
+  
+  // Si la base est vide ou si la connexion échoue, on charge l'exemple automatiquement au lieu d'afficher une page blanche
   state = cloneData(SEED_DATA);
+  setSaveStatus("Base vide : données par défaut chargées.");
 }
 
 async function saveState(){
