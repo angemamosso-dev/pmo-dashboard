@@ -298,44 +298,58 @@ function cloneData(obj){
   return JSON.parse(JSON.stringify(obj));
 }
 
+// ============================================
+// À REMPLACER dans public/index.html
+// (remplace les fonctions loadState() / saveState() actuelles, lignes ~301-321)
+// ============================================
 async function loadState(){
-  setSaveStatus("Chargement depuis la base...");
-  try {
-    const res = await fetch('/api/dashboard', { cache: 'no-store' });
-    const data = await res.json();
-    
-    if (data && data.resources) {
-      state = data;
+  try{
+    const res = await fetch(`/api/dashboard?t=${Date.now()}`, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    });
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const json = await res.json();
+
+    if(json.data && typeof json.data === 'object'){
+      state = json.data;
       if(!Array.isArray(state.types) || !state.types.length) state.types = DEFAULT_TYPES.slice();
       if(!Array.isArray(state.phases) || !state.phases.length) state.phases = DEFAULT_PHASES.slice();
-      setSaveStatus("Données synchronisées.");
-      return;
+    } else {
+      // Base vide -> on seed et on sauvegarde immédiatement
+      state = cloneData(SEED_DATA);
+      await saveState();
     }
-  } catch (e) {
-    console.error("API inaccessible :", e);
+  }catch(e){
+    console.error('loadState: échec du fetch, repli sur SEED_DATA', e);
+    state = cloneData(SEED_DATA);
   }
-  
-  // Sécurité absolue : si l'API échoue ou est vide, on injecte les données locales
-  state = cloneData(SEED_DATA);
-  setSaveStatus("Base vide : données par défaut chargées.");
-}
-async function saveState(){
-  setSaveStatus("Enregistrement en cours...");
-  try {
-    await fetch('/api/dashboard', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(state)
-    });
-    setSaveStatus("Enregistré à " + new Date().toLocaleTimeString("fr-FR"));
-  } catch (e) {
-    console.error("Erreur de sauvegarde :", e);
-    setSaveStatus("Échec de la sauvegarde.");
-  }
+  return state;
 }
 
-function setSaveStatus(msg){
-  document.getElementById("saveStatus").textContent = msg;
+async function saveState(){
+  try{
+    const res = await fetch(`/api/dashboard?t=${Date.now()}`, {
+      method: 'PUT',
+      cache: 'no-store',
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache'
+      },
+      body: JSON.stringify(state)
+    });
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    setSaveStatus("Enregistré à " + new Date().toLocaleTimeString("fr-FR"));
+  }catch(e){
+    console.error('saveState: échec de la sauvegarde', e);
+    setSaveStatus("Erreur de sauvegarde — vérifie ta connexion.");
+  }
 }
 
 /* ---------------------------------------------------------------------
@@ -1236,6 +1250,14 @@ document.getElementById("btnExportExcel").addEventListener("click", exportExcel)
 document.getElementById("btnExportImage").addEventListener("click", exportImage);
 document.getElementById("btnExportPrint").addEventListener("click", exportPrint);
 
+
+loadState().then(() => {
+  renderAll();
+}).catch((err) => {
+  console.error('Erreur critique au chargement de l’état:', err);
+  state = cloneData(SEED_DATA);
+  renderAll();
+});
 </script>
 </body>
 </html>
