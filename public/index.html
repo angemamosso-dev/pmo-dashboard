@@ -329,7 +329,7 @@ async function saveState(){
     });
     setSaveStatus("Enregistré à " + new Date().toLocaleTimeString("fr-FR"));
   } catch (e) {
-    console.error(e);
+    console.error("Erreur de sauvegarde :", e);
     setSaveStatus("Échec de la sauvegarde.");
   }
 }
