@@ -301,12 +301,10 @@ function cloneData(obj){
 async function loadState(){
   setSaveStatus("Chargement depuis la base...");
   try {
-    // "cache: 'no-store'" force le navigateur à toujours récupérer les dernières données, sans jamais utiliser d'ancienne version mémorisée
     const res = await fetch('/api/dashboard', { cache: 'no-store' });
     const data = await res.json();
     
-    // On vérifie que la donnée est complète (elle doit impérativement contenir l'objet "resources")
-    if (data && !data.error && data.resources) {
+    if (data && data.resources) {
       state = data;
       if(!Array.isArray(state.types) || !state.types.length) state.types = DEFAULT_TYPES.slice();
       if(!Array.isArray(state.phases) || !state.phases.length) state.phases = DEFAULT_PHASES.slice();
@@ -314,14 +312,13 @@ async function loadState(){
       return;
     }
   } catch (e) {
-    console.error("Erreur de chargement :", e);
+    console.error("API inaccessible :", e);
   }
   
-  // Si la base est vide ou si la connexion échoue, on charge l'exemple automatiquement au lieu d'afficher une page blanche
+  // Sécurité absolue : si l'API échoue ou est vide, on injecte les données locales
   state = cloneData(SEED_DATA);
   setSaveStatus("Base vide : données par défaut chargées.");
 }
-
 async function saveState(){
   setSaveStatus("Enregistrement en cours...");
   try {
@@ -410,6 +407,7 @@ const STATUS_HEX = {"Sous-utilisé":["#fef3dc","#8a5c00"], "Optimal":["#e5f6e5",
    Rendering
 --------------------------------------------------------------------- */
 function renderAll(){
+  if (!state) return; // Bloque le dessin si les données ne sont pas prêtes
   renderKpis();
   renderStatusCards();
   renderProfileTable();
@@ -1238,10 +1236,6 @@ document.getElementById("btnExportExcel").addEventListener("click", exportExcel)
 document.getElementById("btnExportImage").addEventListener("click", exportImage);
 document.getElementById("btnExportPrint").addEventListener("click", exportPrint);
 
-// Lancement sécurisé : on attend que loadState termine avant de dessiner
-loadState().then(() => {
-  renderAll();
-});
 </script>
 </body>
 </html>
