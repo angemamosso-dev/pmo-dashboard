@@ -344,6 +344,12 @@ async function doSaveState(){
   }
 }
 
+// À AJOUTER dans public/index.html
+function setSaveStatus(text){
+  const el = document.getElementById("saveStatus");
+  if(el) el.textContent = text;
+}
+
 function saveState(){
   setSaveStatus("Enregistrement…");
   clearTimeout(saveTimeout);
