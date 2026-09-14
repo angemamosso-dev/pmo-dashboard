@@ -314,7 +314,7 @@ async function loadState(){
       if(!Array.isArray(state.phases) || !state.phases.length) state.phases = DEFAULT_PHASES.slice();
     } else {
       state = cloneData(SEED_DATA);
-      await saveState();
+      saveState();
     }
   }catch(e){
     console.error('loadState: échec du fetch, repli sur SEED_DATA', e);
@@ -323,7 +323,13 @@ async function loadState(){
   return state;
 }
 
-async function saveState(){
+// ============================================
+// À REMPLACER dans public/index.html : la fonction saveState()
+// (cherche "async function saveState")s
+// ============================================
+let saveTimeout = null;
+
+async function doSaveState(){
   try{
     const res = await fetch(`/api/dashboard?t=${Date.now()}`, {
       method: 'PUT', cache: 'no-store',
@@ -336,6 +342,12 @@ async function saveState(){
     console.error('saveState: échec de la sauvegarde', e);
     setSaveStatus("Erreur de sauvegarde — vérifie ta connexion.");
   }
+}
+
+function saveState(){
+  setSaveStatus("Enregistrement…");
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(doSaveState, 500);
 }
 /* ---------------------------------------------------------------------
    Calculations
