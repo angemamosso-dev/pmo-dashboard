@@ -298,30 +298,21 @@ function cloneData(obj){
   return JSON.parse(JSON.stringify(obj));
 }
 
-// ============================================
-// À REMPLACER dans public/index.html
-// (remplace les fonctions loadState() / saveState() actuelles, lignes ~301-321)
-// ============================================
+
+// Remplace les fonctions loadState() et saveState() (cherche "function loadState")
 async function loadState(){
   try{
     const res = await fetch(`/api/dashboard?t=${Date.now()}`, {
-      method: 'GET',
-      cache: 'no-store',
-      headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate',
-        'Pragma': 'no-cache'
-      }
+      method: 'GET', cache: 'no-store',
+      headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate', 'Pragma': 'no-cache' }
     });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
-
     const json = await res.json();
-
     if(json.data && typeof json.data === 'object'){
       state = json.data;
       if(!Array.isArray(state.types) || !state.types.length) state.types = DEFAULT_TYPES.slice();
       if(!Array.isArray(state.phases) || !state.phases.length) state.phases = DEFAULT_PHASES.slice();
     } else {
-      // Base vide -> on seed et on sauvegarde immédiatement
       state = cloneData(SEED_DATA);
       await saveState();
     }
@@ -335,13 +326,8 @@ async function loadState(){
 async function saveState(){
   try{
     const res = await fetch(`/api/dashboard?t=${Date.now()}`, {
-      method: 'PUT',
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-store, no-cache, must-revalidate',
-        'Pragma': 'no-cache'
-      },
+      method: 'PUT', cache: 'no-store',
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store, no-cache, must-revalidate', 'Pragma': 'no-cache' },
       body: JSON.stringify(state)
     });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -351,7 +337,6 @@ async function saveState(){
     setSaveStatus("Erreur de sauvegarde — vérifie ta connexion.");
   }
 }
-
 /* ---------------------------------------------------------------------
    Calculations
 --------------------------------------------------------------------- */
@@ -420,8 +405,9 @@ const STATUS_HEX = {"Sous-utilisé":["#fef3dc","#8a5c00"], "Optimal":["#e5f6e5",
 /* ---------------------------------------------------------------------
    Rendering
 --------------------------------------------------------------------- */
+// Remplace function renderAll() (cherche "function renderAll")
 function renderAll(){
-  if (!state) return; // Bloque le dessin si les données ne sont pas prêtes
+  if (!state) return;
   renderKpis();
   renderStatusCards();
   renderProfileTable();
@@ -1254,7 +1240,7 @@ document.getElementById("btnExportPrint").addEventListener("click", exportPrint)
 loadState().then(() => {
   renderAll();
 }).catch((err) => {
-  console.error('Erreur critique au chargement de l’état:', err);
+  console.error('Erreur critique au chargement de l\u2019état:', err);
   state = cloneData(SEED_DATA);
   renderAll();
 });
