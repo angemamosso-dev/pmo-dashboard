@@ -21,6 +21,16 @@
   header h1{margin:0; font-size:20px; color:var(--navy); font-weight:700;}
   header p{margin:4px 0 0; color:var(--muted); font-size:13px;}
 
+  .tabs{display:flex; gap:4px; padding:0 28px; background:#fff; border-bottom:1px solid var(--border);}
+  .tab-btn{
+    background:none; color:var(--muted); border:none; border-bottom:3px solid transparent; border-radius:0;
+    padding:12px 16px; font-size:13px; font-weight:600; cursor:pointer;
+  }
+  .tab-btn.active{color:var(--navy); border-bottom-color:var(--navy);}
+  .tab-btn:hover{opacity:1; color:var(--navy);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
   .section{padding:14px 28px 4px;}
   .section h2{font-size:12.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:0 0 8px;}
 
@@ -35,11 +45,18 @@
   .status-chip-row{display:flex; gap:8px; flex-wrap:wrap;}
   .status-chip{border-radius:8px; padding:6px 10px; font-size:11.5px; font-weight:700; flex:1; text-align:center; min-width:70px;}
 
-  .profile-table-wrap{background:#fff; border:1px solid var(--border); border-radius:8px; overflow:auto;}
-  table.profile-table{width:100%; border-collapse:collapse; font-size:12.5px;}
-  table.profile-table th, table.profile-table td{padding:7px 10px; text-align:center; border-bottom:1px solid var(--border);}
-  table.profile-table th{background:var(--navy); color:#fff; font-weight:600; font-size:11.5px;}
-  table.profile-table td:first-child, table.profile-table th:first-child{text-align:left;}
+  .profile-table-wrap, .opp-table-wrap, .plan-table-wrap{background:#fff; border:1px solid var(--border); border-radius:8px; overflow:auto;}
+  table.profile-table, table.opp-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  table.profile-table th, table.profile-table td, table.opp-table th, table.opp-table td{padding:7px 10px; text-align:center; border-bottom:1px solid var(--border);}
+  table.profile-table th, table.opp-table th{background:var(--navy); color:#fff; font-weight:600; font-size:11.5px;}
+  table.profile-table td:first-child, table.profile-table th:first-child,
+  table.opp-table td:first-child, table.opp-table th:first-child,
+  table.opp-table td, table.opp-table th{text-align:left;}
+  table.opp-table td:nth-child(3), table.opp-table th:nth-child(3){text-align:center;}
+
+  .link-btn{color:var(--blue-dark); cursor:pointer; font-weight:600; font-size:12px;}
+  .link-btn.del{color:var(--sur);}
+  .link-btn:hover{text-decoration:underline;}
 
   .toolbar{display:flex; gap:8px; padding:12px 28px; flex-wrap:wrap; align-items:center;}
   button{
@@ -56,7 +73,7 @@
   .dropdown{position:relative; display:inline-block;}
   .dropdown-menu{
     display:none; position:absolute; top:calc(100% + 4px); left:0; background:#fff; border:1px solid var(--border);
-    border-radius:8px; box-shadow:0 6px 18px rgba(20,30,45,.15); min-width:220px; z-index:40; overflow:hidden;
+    border-radius:8px; box-shadow:0 6px 18px rgba(20,30,45,.15); min-width:230px; z-index:40; overflow:hidden;
   }
   .dropdown-menu.open{display:block;}
   .dropdown-menu button{
@@ -75,12 +92,11 @@
   table#matrice{border-collapse:separate; border-spacing:0; font-size:12.5px; white-space:nowrap;}
   table#matrice th, table#matrice td{border-bottom:1px solid var(--border); border-right:1px solid var(--border); padding:4px 6px; text-align:center;}
   thead th{background:var(--navy); color:#fff; position:sticky; top:0; z-index:3; font-weight:600;}
-  thead tr.proj-row th{background:var(--navy2); font-size:12px; vertical-align:top;}
   th.rowlabel-head, td.rowlabel{position:sticky; left:0; z-index:2; background:#fff; text-align:left; min-width:172px; max-width:210px; white-space:normal;}
   thead th.rowlabel-head{z-index:4; background:var(--navy);}
   td.rowlabel .rtop{display:flex; align-items:center; gap:4px;}
   td.rowlabel .rm{cursor:pointer; color:var(--sur); font-size:11px; font-weight:700; margin-left:auto; padding:0 2px;}
-  th.projhead{min-width:118px; position:relative;}
+  th.projhead{min-width:118px; position:relative; vertical-align:top;}
   th.projhead .pm{cursor:pointer; color:#ffd; font-size:11px; margin-left:6px; float:right;}
   th .phead-top{display:flex; align-items:center; gap:4px; margin-bottom:3px;}
 
@@ -104,13 +120,11 @@
   select.proj-phase-select{color:#cfe0f2; font-size:10px; max-width:130px;}
   select.type-select:focus, select.proj-phase-select:focus{border-color:var(--navy); background:#fff; color:var(--text);}
 
-  input.cell-input{
-    width:52px; border:1px solid transparent; background:transparent; text-align:center;
-    font-size:12.5px; border-radius:4px; padding:2px; color:var(--text); font-weight:600;
-  }
-  input.cell-input:focus{border-color:var(--navy); background:#fff;}
-  td.aff-cell{background:var(--blue-light);}
-  td.chg-cell{background:var(--orange-light);}
+  td.alloc-cell{cursor:pointer; min-width:108px;}
+  td.alloc-cell:hover{background:#f6f8fb;}
+  .alloc-badges{display:flex; gap:4px; justify-content:center;}
+  .alloc-badges span{border-radius:5px; padding:2px 6px; font-size:11px; font-weight:700; min-width:38px; display:inline-block;}
+  .alloc-future{font-size:9.5px; color:var(--muted); margin-top:2px; font-style:italic; white-space:normal; max-width:110px; margin-left:auto; margin-right:auto;}
 
   td.total-cell{font-weight:700; background:#fafbfc;}
   td.status-cell span{padding:2px 8px; border-radius:10px; font-weight:700; font-size:11px; white-space:nowrap;}
@@ -128,7 +142,7 @@
   }
   .modal-overlay.open{display:flex;}
   .modal{background:#fff; border-radius:10px; padding:22px 26px; width:340px; max-width:90vw; max-height:86vh; overflow:auto;}
-  .modal.wide{width:560px;}
+  .modal.wide{width:600px;}
   .modal h3{margin:0 0 14px; color:var(--navy); font-size:16px;}
   .modal label{display:block; font-size:12px; color:var(--muted); margin:10px 0 3px; font-weight:600;}
   .modal input, .modal select{width:100%; padding:7px 9px; border:1px solid var(--border); border-radius:6px; font-size:13px;}
@@ -144,6 +158,56 @@
   .list-add input{flex:1; padding:5px 7px; border:1px dashed var(--border); border-radius:5px; font-size:12.5px;}
   .list-add button{padding:5px 10px; font-size:11.5px;}
 
+  .seg-hint{font-size:11px; color:var(--muted); margin-top:10px;}
+  .seg-horizon-bar{display:flex; gap:8px; align-items:center; margin-bottom:12px; flex-wrap:wrap;}
+  .seg-horizon-bar label{font-size:12px; color:var(--muted); font-weight:600;}
+  .seg-horizon-bar input{width:64px; padding:5px 7px; border:1px solid var(--border); border-radius:6px; font-size:12.5px;}
+  .month-grid-wrap{overflow:auto; max-width:100%; border:1px solid var(--border); border-radius:8px;}
+  table.month-grid{border-collapse:collapse; font-size:11.5px; white-space:nowrap;}
+  table.month-grid th, table.month-grid td{border:1px solid var(--border); padding:5px 7px; text-align:center;}
+  table.month-grid th{background:var(--navy); color:#fff; font-weight:600; font-size:10.5px;}
+  table.month-grid td.row-lbl, table.month-grid th.row-lbl{
+    text-align:left; position:sticky; left:0; background:#fff; z-index:1; min-width:110px; font-weight:600; color:var(--muted);
+  }
+  table.month-grid thead th.row-lbl{background:var(--navy); z-index:2;}
+  table.month-grid input{width:58px; padding:4px 5px; border:1px solid var(--border); border-radius:5px; font-size:11.5px; text-align:center;}
+
+  .pv{cursor:pointer; font-size:12px; margin-left:4px; padding:0 2px;}
+  .assign-chip{display:inline-flex; align-items:center; gap:4px; background:var(--blue-light); color:var(--blue-dark); border-radius:10px; padding:2px 8px; font-size:11px; font-weight:600; margin:2px 4px 2px 0;}
+  .assign-chip .del{cursor:pointer; color:var(--sur); font-weight:700;}
+  .need-block{border:1px solid var(--border); border-radius:8px; padding:8px 10px; margin-bottom:8px;}
+  .need-assign-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:6px; font-size:11.5px;}
+  .need-assign-row select{width:auto; padding:4px 6px; font-size:11px;}
+
+  .horizon-bar{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:10px;}
+  .horizon-bar label{font-size:12px; color:var(--muted); font-weight:600;}
+  .horizon-bar input{padding:6px 8px; border:1px solid var(--border); border-radius:6px; font-size:12.5px;}
+
+  table.plan-table{border-collapse:collapse; font-size:11.5px; white-space:nowrap;}
+  table.plan-table th, table.plan-table td{border:1px solid var(--border); padding:5px 8px; text-align:center;}
+  table.plan-table thead th{background:var(--navy); color:#fff; position:sticky; top:0;}
+  table.plan-table td.plan-rowlabel, table.plan-table th.plan-rowlabel{
+    text-align:left; position:sticky; left:0; background:#fff; z-index:1; min-width:170px;
+  }
+  table.plan-table thead th.plan-rowlabel{background:var(--navy); z-index:2;}
+  tr.type-row td{background:#eef2f7; font-weight:700; color:var(--navy);}
+  tr.type-row td.plan-rowlabel{background:#eef2f7;}
+  tr.role-row td.plan-rowlabel{padding-left:20px; color:var(--muted); font-weight:400;}
+  tr.resource-row td.plan-rowlabel{padding-left:34px; color:var(--muted); font-weight:400; font-size:11px;}
+  td.res-load-cell{font-weight:700; font-size:11px;}
+  td.res-load-cell.st-sous{background:var(--sous-bg); color:var(--sous);}
+  td.res-load-cell.st-opt{background:var(--opt-bg); color:var(--opt);}
+  td.res-load-cell.st-tendu{background:var(--tendu-bg); color:var(--tendu);}
+  td.res-load-cell.st-sur{background:var(--sur-bg); color:var(--sur);}
+  .plan-sub{font-size:9.5px; color:var(--muted);}
+  .plan-ecart{font-weight:700; font-size:12px;}
+  td.ecart-pos .plan-ecart{color:var(--opt);}
+  td.ecart-tight .plan-ecart{color:var(--sous);}
+  td.ecart-neg .plan-ecart{color:var(--sur);}
+  td.ecart-pos{background:#f3faf3;}
+  td.ecart-tight{background:#fffaf0;}
+  td.ecart-neg{background:#fdf2f2;}
+
   .legend{padding:0 28px 20px; font-size:11.5px; color:var(--muted);}
   .legend span.sw{display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:4px; vertical-align:middle;}
 </style>
@@ -152,71 +216,120 @@
 
 <header>
   <h1>Dashboard Ressources — Portefeuille PMO AKIENI</h1>
-  <p>Vue Matrice ressource × projet — application locale, tout est modifiable, données enregistrées sur cet ordinateur</p>
+  <p>Matrice ressource × projet, planification dans le temps, et plan de charge face aux opportunités — application locale</p>
 </header>
 
-<div class="section">
-  <h2>Indicateurs clés</h2>
-  <div class="kpis" id="kpis"></div>
+<div class="tabs">
+  <button class="tab-btn active" data-tab="tabMatrice" onclick="switchTab('tabMatrice')">Matrice</button>
+  <button class="tab-btn" data-tab="tabPlan" onclick="switchTab('tabPlan')">Plan de charge &amp; Opportunités</button>
 </div>
 
-<div class="section">
-  <div class="status-cards" id="statusCards"></div>
-</div>
+<!-- =====================  TAB: MATRICE  ===================== -->
+<div class="tab-panel active" id="tabMatrice">
 
-<div class="section">
-  <h2>Indicateurs par profil (type de ressource)</h2>
-  <div class="profile-table-wrap">
-    <table class="profile-table" id="profileTable"></table>
+  <div class="section">
+    <h2>Indicateurs clés (à la date du jour)</h2>
+    <div class="kpis" id="kpis"></div>
   </div>
-</div>
 
-<div class="toolbar">
-  <button id="btnAddRes">+ Ressource</button>
-  <button id="btnAddProj">+ Projet</button>
-  <button class="secondary" id="btnManageLists">Gérer les listes (types / phases)</button>
-  <div class="spacer"></div>
-  <div class="dropdown" id="exportDropdown">
-    <button class="secondary" id="btnExportMenu">Exporter ▾</button>
-    <div class="dropdown-menu" id="exportMenu">
-      <button id="btnExportJson">Sauvegarde (.json)</button>
-      <button id="btnExportCsv">Tableau (.csv)</button>
-      <button id="btnExportExcel">Classeur Excel (.xls)</button>
-      <button id="btnExportImage">Image (.png)</button>
-      <button id="btnExportPrint">Rapport imprimable (nouvel onglet)</button>
+  <div class="section">
+    <div class="status-cards" id="statusCards"></div>
+  </div>
+
+  <div class="section">
+    <h2>Indicateurs par profil (type de ressource)</h2>
+    <div class="profile-table-wrap">
+      <table class="profile-table" id="profileTable"></table>
     </div>
   </div>
-  <button class="secondary" id="btnImportTrigger">Importer une sauvegarde</button>
-  <input type="file" id="fileImport" accept="application/json">
-  <button class="danger" id="btnReset">Réinitialiser (exemple)</button>
-  <span class="save-status" id="saveStatus"></span>
+
+  <div class="toolbar">
+    <button id="btnAddRes">+ Ressource</button>
+    <button id="btnAddProj">+ Projet</button>
+    <button class="secondary" id="btnManageLists">Gérer les listes (types / phases)</button>
+    <div class="spacer"></div>
+    <div class="dropdown" id="exportDropdown">
+      <button class="secondary" id="btnExportMenu">Exporter ▾</button>
+      <div class="dropdown-menu" id="exportMenu">
+        <button id="btnExportJson">Sauvegarde (.json)</button>
+        <button id="btnExportCsv">Tableau Matrice (.csv)</button>
+        <button id="btnExportPlanCsv">Plan de charge (.csv)</button>
+        <button id="btnExportResCharge">Charge prévisionnelle par ressource (.csv)</button>
+        <button id="btnExportExcel">Classeur Excel (.xls)</button>
+        <button id="btnExportImage">Image (.png)</button>
+        <button id="btnExportPrint">Rapport imprimable (nouvel onglet)</button>
+      </div>
+    </div>
+    <button class="secondary" id="btnImportTrigger">Importer une sauvegarde</button>
+    <input type="file" id="fileImport" accept="application/json">
+    <button class="danger" id="btnReset">Réinitialiser (exemple)</button>
+    <span class="save-status" id="saveStatus"></span>
+  </div>
+
+  <div class="help-wrap">
+    <details>
+      <summary>ⓘ Comment utiliser ce tableau ?</summary>
+      <p><b>% Affecté</b> = la part du temps de la ressource nominalement assignée à ce projet. <b>% Chargeabilité</b> = pour ce même projet, la part de cette affectation que le travail réellement réalisé couvre — 100&nbsp;% veut dire que l'activité couvre exactement l'affectation ; 50&nbsp;% = seule la moitié est couverte ; 150&nbsp;% = dépassement. C'est un ratio, toujours relatif au % Affecté de la même période.</p>
+      <p><b>Chaque case se planifie mois par mois</b> : clique n'importe où sur une case pour ouvrir sa grille (mois en cours + les mois suivants, nombre réglable) et saisir directement le % Affecté et le % Chargeabilité de chaque mois — utile pour indiquer par exemple une baisse ou une fin d'affectation à venir. La case affiche les valeurs du mois <b>en cours aujourd'hui</b>, et une petite mention grisée indique le prochain changement planifié ("jusqu'au…" ou "→ … dès le…").</p>
+      <p>Chaque ressource a aussi une icône <b>📅</b> à côté de son nom pour voir en un coup d'œil son <b>plan de charge personnel</b> (tous ses projets et opportunités assignées, mois par mois).</p>
+      <p>Les totaux, statuts et indicateurs de cette page reflètent toujours la situation <b>à la date du jour</b>. Pour voir l'évolution dans le temps et anticiper les besoins des opportunités à venir, utilise l'onglet <b>Plan de charge &amp; Opportunités</b>.</p>
+      <p><b>Tout est modifiable</b> : nom, type et rôle de chaque ressource, nom et phase de chaque projet. Poignée <b>⠿</b> pour glisser-déposer et changer l'ordre. « Gérer les listes » ajoute/renomme/retire les Types et Phases proposés. ✕ retire une ressource ou un projet.</p>
+      <p>Sauvegarde automatique dans ce navigateur. Le menu « Exporter » propose une sauvegarde JSON, un CSV, un classeur Excel, une image PNG et un rapport imprimable.</p>
+    </details>
+  </div>
+
+  <div class="table-wrap">
+    <table id="matrice">
+      <thead></thead>
+      <tbody></tbody>
+      <tfoot></tfoot>
+    </table>
+  </div>
+
+  <div class="legend">
+    <span class="sw" style="background:var(--blue-light);border:1px solid var(--blue-dark);"></span> % Affecté
+    &nbsp;&nbsp;
+    <span class="sw" style="background:var(--orange-light);border:1px solid var(--orange-dark);"></span> % Chargeabilité (ratio vs Affecté de la même période)
+    &nbsp;&nbsp; — clique une case pour planifier ses périodes · ⠿ glisser pour réordonner · ✕ retirer.
+  </div>
 </div>
 
-<div class="help-wrap">
-  <details>
-    <summary>ⓘ Comment utiliser ce tableau ?</summary>
-    <p><b>% Affecté</b> (bloc bleu) = la part du temps de la ressource nominalement assignée à ce projet.</p>
-    <p><b>% Chargeabilité</b> (bloc orange) = pour ce même projet, la part de cette affectation que le travail réellement réalisé couvre — 100&nbsp;% veut dire que l'activité couvre exactement l'affectation sur ce projet ; 50&nbsp;% = seule la moitié est couverte ; 150&nbsp;% = dépassement sur ce projet précis. C'est un ratio, toujours relatif au % Affecté de la même case, jamais une valeur indépendante.</p>
-    <p><b>Chargeabilité totale</b> = pour chaque projet, ce ratio est converti en temps réellement absolu (ratio × Affecté de ce projet), puis additionné sur tous les projets de la ressource — directement comparable au <b>Total affecté</b>. <b>Écart</b> = Chargeabilité totale − Total affecté.</p>
-    <p>Seuils de statut : Sous-utilisé &lt; 70&nbsp;% · Optimal 70–100&nbsp;% · Tendu 100–115&nbsp;% · Surcharge &gt; 115&nbsp;%.</p>
-    <p><b>Tout est modifiable directement dans le tableau</b> : nom, type et rôle de chaque ressource, nom et phase de chaque projet, et bien sûr les %. Utilise la poignée <b>⠿</b> pour glisser-déposer une ressource ou un projet et changer son ordre. « Gérer les listes » permet d'ajouter/renommer/retirer les Types et les Phases proposés dans les menus déroulants. Le ✕ retire une ressource ou un projet du tableau.</p>
-    <p>Les données sont sauvegardées automatiquement dans ce navigateur. Le menu « Exporter » propose une sauvegarde JSON (à réimporter plus tard ou sur un autre poste), un export CSV, un classeur Excel, une image PNG et un rapport imprimable qui s'ouvre dans un nouvel onglet.</p>
-  </details>
-</div>
+<!-- =====================  TAB: PLAN DE CHARGE & OPPORTUNITÉS  ===================== -->
+<div class="tab-panel" id="tabPlan">
 
-<div class="table-wrap">
-  <table id="matrice">
-    <thead></thead>
-    <tbody></tbody>
-    <tfoot></tfoot>
-  </table>
-</div>
+  <div class="section">
+    <h2>Opportunités à venir</h2>
+    <div class="toolbar" style="padding-left:0;padding-right:0;">
+      <button id="btnAddOpp">+ Ajouter une opportunité</button>
+    </div>
+    <div class="opp-table-wrap">
+      <div id="oppListWrap"></div>
+    </div>
+  </div>
 
-<div class="legend">
-  <span class="sw" style="background:var(--blue-light);border:1px solid var(--blue-dark);"></span> % Affecté
-  &nbsp;&nbsp;
-  <span class="sw" style="background:var(--orange-light);border:1px solid var(--orange-dark);"></span> % Chargeabilité (ratio vs Affecté du même projet)
-  &nbsp;&nbsp; — ⠿ glisser pour réordonner · ✕ retirer.
+  <div class="section">
+    <h2>Plan de charge par profil / rôle</h2>
+    <div class="horizon-bar">
+      <label>Du</label><input type="date" id="planFrom">
+      <label>Au</label><input type="date" id="planTo">
+      <button class="secondary" id="btnRecalcPlan">Recalculer</button>
+      <span style="color:var(--muted);font-size:11.5px;">Capacité / Besoin / Écart exprimés en équivalent temps plein (ETP). Écart négatif = manque de ressources sur ce mois : recruter ou décharger d'autres projets.</span>
+    </div>
+    <div class="plan-table-wrap">
+      <div id="planTableWrap"></div>
+    </div>
+  </div>
+
+  <div class="help-wrap">
+    <details>
+      <summary>ⓘ Comment lire le plan de charge ?</summary>
+      <p>Chaque <b>opportunité</b> a une date de début prévue et une liste de besoins exprimés par <b>rôle précis</b> (ex. « 2 Développeurs Backend à 100 % chacun, 1 Architecte Solutions à 50 % »). Le taux (%) est la charge demandée <b>par personne</b>, pas un total.</p>
+      <p>Dans la fenêtre d'édition d'une opportunité, chaque besoin propose une liste de <b>ressources recommandées</b> de ce rôle, classées par disponibilité au mois de démarrage — tu peux en <b>assigner</b> une ou plusieurs nommément. Une fois assignée, sa charge est automatiquement réservée dans son plan de charge personnel (accessible via l'icône 📅 sur sa ligne) et elle n'est plus recommandée en priorité sur une autre opportunité si elle est déjà complète.</p>
+      <p>Le tableau ci-dessous regroupe tous les rôles (existants et ceux uniquement mentionnés dans des opportunités, marqués « À recruter ») par Type. Pour chaque mois de l'horizon choisi : <b>Dispo</b> = capacité totale de ce rôle (effectif × 100 %) moins ce qui est déjà planifié sur les projets existants ET les réservations d'opportunités ce mois-là ; <b>Bes</b> = somme des besoins <b>restant à couvrir</b> (nombre de personnes moins celles déjà assignées) des opportunités dont la date de début prévue est atteinte à ce mois ; <b>Écart</b> = Dispo − Bes, en vert si suffisant, en rouge s'il manque des ressources sur ce rôle à ce mois — signal pour recruter ou décharger d'autres projets.</p>
+      <p>Les lignes en gras sont des totaux par Type ; les lignes indentées en dessous détaillent par Rôle ; et sous chaque Rôle, une ligne par <b>ressource nommée</b> affiche directement sa charge totale mois par mois (projets réels + opportunités déjà assignées), colorée selon le même statut que la Matrice (Sous-utilisé/Optimal/Tendu/Surcharge) — plus besoin d'ouvrir le plan de chacune une par une pour repérer qui est disponible ou en surcharge.</p>
+      <p>Le menu « Exporter » propose « Charge prévisionnelle par ressource (.csv) » et, dans le classeur Excel, une feuille « Charge ressources » : la même donnée que ces lignes, pour toutes les ressources, un mois par colonne — prête à trier/filtrer.</p>
+    </details>
+  </div>
 </div>
 
 <!-- Modal: add resource -->
@@ -228,7 +341,7 @@
     <label>Type</label>
     <select id="newResType"></select>
     <label>Rôle</label>
-    <input type="text" id="newResRole" placeholder="ex. Développeur Backend">
+    <input type="text" id="newResRole" list="roleSuggestions" placeholder="ex. Développeur Backend">
     <div class="actions">
       <button class="secondary" onclick="closeModal('modalRes')">Annuler</button>
       <button onclick="confirmAddResource()">Ajouter</button>
@@ -279,12 +392,83 @@
   </div>
 </div>
 
+<!-- Modal: monthly grid planner for one Ressource x Projet cell -->
+<div class="modal-overlay" id="modalSegments">
+  <div class="modal wide">
+    <h3 id="segModalTitle">Planifier</h3>
+    <div class="seg-horizon-bar">
+      <label>Nombre de mois affichés</label>
+      <input type="number" id="segHorizonInput" min="1" max="36" step="1" onchange="changeSegHorizon(this.value)">
+    </div>
+    <div class="month-grid-wrap">
+      <table class="month-grid" id="segGridTable"></table>
+    </div>
+    <p class="seg-hint">Un mois laissé identique au précédent n'a pas besoin d'être ressaisi : la dernière valeur saisie continue de s'appliquer au-delà du dernier mois affiché, jusqu'à ce qu'elle soit changée. Changer le nombre de mois affichés recharge la grille depuis les données enregistrées.</p>
+    <div class="actions">
+      <button class="secondary" onclick="closeModal('modalSegments')">Annuler</button>
+      <button onclick="saveSegments()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: personal capacity plan for one resource -->
+<div class="modal-overlay" id="modalResPlan">
+  <div class="modal wide">
+    <h3 id="resPlanTitle">Plan de charge</h3>
+    <div class="month-grid-wrap">
+      <div id="resPlanTableWrap"></div>
+    </div>
+    <div class="actions">
+      <button onclick="closeModal('modalResPlan')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: add / edit opportunity -->
+<div class="modal-overlay" id="modalOpp">
+  <div class="modal wide">
+    <h3 id="oppModalTitle">Ajouter une opportunité</h3>
+    <label>Nom</label>
+    <input type="text" id="oppName" placeholder="ex. Nouvelle opportunité X">
+    <label>Client</label>
+    <input type="text" id="oppClient" placeholder="ex. Ministère…">
+    <label>Date de début prévue</label>
+    <input type="date" id="oppDate" onchange="renderNeedsRows()">
+    <label>Besoins en ressources (par rôle précis)</label>
+    <p style="font-size:11px;color:var(--muted);margin:2px 0 8px;">« Nb personnes » = nombre de personnes recherchées pour ce rôle. « Taux %/pers. » = la charge de travail demandée <b>par personne</b> sur cette opportunité (100&nbsp;% = temps plein, 50&nbsp;% = mi-temps, etc.).</p>
+    <div id="oppNeedsWrap"></div>
+    <button class="secondary" onclick="addNeedRow()">+ Ajouter un besoin</button>
+    <div class="actions">
+      <button class="secondary" onclick="closeModal('modalOpp')">Annuler</button>
+      <button onclick="saveOpportunity()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+<datalist id="roleSuggestions"></datalist>
+
 <script>
 const SEED_DATA = {"resources": [{"name": "Ahmed", "type": "Technique", "role": "Développeur Backend"}, {"name": "Orphée", "type": "Technique", "role": "Développeur Frontend / Mobile"}, {"name": "Anziz", "type": "Technique", "role": "Ingénieur Système"}, {"name": "Loyic", "type": "Technique", "role": "Ingénieur Réseau"}, {"name": "Pape", "type": "Technique", "role": "Architecte Solutions"}, {"name": "Gabrielle", "type": "Technique", "role": "Testeur QA / Recette"}, {"name": "Claude", "type": "Technique", "role": "Développeur Backend"}, {"name": "Husein", "type": "Technique", "role": "Développeur Frontend / Mobile"}, {"name": "Déo", "type": "Technique", "role": "Ingénieur Système"}, {"name": "Ange", "type": "Technique", "role": "Ingénieur Réseau"}, {"name": "Karhyt", "type": "Technique", "role": "Architecte Solutions"}, {"name": "Audrey", "type": "Technique", "role": "Testeur QA / Recette"}, {"name": "Marcel", "type": "Technique", "role": "Développeur Backend"}, {"name": "Jaques Dani", "type": "Technique", "role": "Développeur Frontend / Mobile"}, {"name": "Indrix", "type": "Technique", "role": "Ingénieur Système"}, {"name": "Typhaine", "type": "Technique", "role": "Ingénieur Réseau"}, {"name": "Reine", "type": "Technique", "role": "Architecte Solutions"}, {"name": "Destino", "type": "Technique", "role": "Testeur QA / Recette"}, {"name": "Eden", "type": "Projet", "role": "Chef de Projet"}, {"name": "Gatien", "type": "Projet", "role": "Coordinateur Projet"}, {"name": "Abed", "type": "Projet", "role": "Chef de Projet"}, {"name": "Divin", "type": "Projet", "role": "Coordinateur Projet"}, {"name": "Ester", "type": "Projet", "role": "Chef de Projet"}, {"name": "Ifrikia", "type": "Projet", "role": "Coordinateur Projet"}, {"name": "Nadege", "type": "Projet", "role": "Chef de Projet"}, {"name": "Michelle", "type": "Projet", "role": "Coordinateur Projet"}, {"name": "Nédith", "type": "Support", "role": "Support & Exploitation"}, {"name": "Jacques N", "type": "Support", "role": "Support Utilisateurs"}, {"name": "Glody", "type": "Support", "role": "Support & Exploitation"}, {"name": "Orion", "type": "Support", "role": "Support Utilisateurs"}, {"name": "Alexandre", "type": "Support", "role": "Support & Exploitation"}, {"name": "Fadel", "type": "Support", "role": "Support Utilisateurs"}, {"name": "Tom", "type": "Autre", "role": "Rôle transverse"}, {"name": "Christian", "type": "Autre", "role": "À préciser"}, {"name": "Achille", "type": "Autre", "role": "Rôle transverse"}, {"name": "Fariol", "type": "Autre", "role": "À préciser"}, {"name": "Rick", "type": "Autre", "role": "Rôle transverse"}, {"name": "Rolic", "type": "BA", "role": "Business Analyst"}, {"name": "Christoffert", "type": "BA", "role": "Analyste Métier"}, {"name": "Anthony", "type": "BA", "role": "Business Analyst"}, {"name": "Sanctifier", "type": "BA", "role": "Analyste Métier"}, {"name": "Victoire", "type": "RH", "role": "Formation & RH"}, {"name": "Alfa", "type": "RH", "role": "Responsable RH"}, {"name": "Daniel K.", "type": "RH", "role": "Formation & RH"}], "projects": [{"name": "NSIA - Parcours client", "phase": "Initialisation et cadrage"}, {"name": "AMC - API Digit V C", "phase": "Planification"}, {"name": "SFEC 2", "phase": "Conception/Architecture et Design"}, {"name": "KAMOA - Defacash", "phase": "Développement et Mise en œuvre"}, {"name": "BCH-Automates", "phase": "Test & validation"}, {"name": "MPTEN-eGouv", "phase": "Mise en prod"}, {"name": "MPTEN-webSite", "phase": "Support et Amélioration Continue"}, {"name": "MPTEN-eGov portail", "phase": "Initialisation et cadrage"}], "alloc": [[[1, 1.2], null, null, [0.2, 0.7], null, null, null, null], [null, [0.5, 0.75], null, null, null, null, null, null], [null, null, [0.8, 1.35], null, null, null, null, null], [null, null, null, [0.6, 0.95], null, null, null, null], [null, null, null, null, [0.4, 0.7], null, null, null], [[0.4, 1.2], null, null, null, null, [0.9, 1.1], null, null], [null, null, null, null, null, null, [0.7, 0.6], null], [null, null, null, null, null, null, null, [1, 0.9]], [[0.5, 1.05], null, null, null, null, null, null, null], [null, [0.8, 1.2], null, null, null, null, null, null], [null, null, [0.6, 0.75], null, null, [0.5, 1.1], null, null], [null, null, null, [0.4, 1.35], null, null, null, null], [null, null, null, null, [0.9, 0.95], null, null, null], [null, null, null, null, null, [0.7, 0.7], null, null], [null, null, null, null, null, null, [1, 1.1], null], [null, null, [0.45, 0.75], null, null, null, null, [0.5, 0.6]], [[0.8, 0.9], null, null, null, null, null, null, null], [null, [0.6, 1.05], null, null, null, null, null, null], [null, null, [0.4, 1.2], null, null, null, null, null], [null, null, null, [0.9, 0.75], null, null, null, null], [null, null, null, null, [0.7, 1.35], null, null, [0.3, 0.6]], [null, null, null, null, null, [1, 0.95], null, null], [null, null, null, null, null, null, [0.5, 0.7], null], [null, null, null, null, null, null, null, [0.8, 1.1]], [[0.6, 0.6], null, null, null, null, null, null, null], [null, [0.4, 0.9], null, null, [0.25, 1.35], null, null, null], [null, null, [0.9, 1.05], null, null, null, null, null], [null, null, null, [0.7, 1.2], null, null, null, null], [null, null, null, null, [1, 0.75], null, null, null], [null, null, null, null, null, [0.5, 1.35], null, null], [null, [0.35, 0.9], null, null, null, null, [0.8, 0.95], null], [null, null, null, null, null, null, null, [0.6, 0.7]], [[0.4, 1.1], null, null, null, null, null, null, null], [null, [0.9, 0.6], null, null, null, null, null, null], [null, null, [0.7, 0.9], null, null, null, null, null], [null, null, null, [1, 1.05], null, null, [0.2, 0.95], null], [null, null, null, null, [0.5, 1.2], null, null, null], [null, null, null, null, null, [0.8, 0.75], null, null], [null, null, null, null, null, null, [0.6, 1.35], null], [null, null, null, null, null, null, null, [0.4, 0.95]], [[0.9, 0.7], null, null, [0.4, 1.05], null, null, null, null], [null, [0.7, 1.1], null, null, null, null, null, null], [null, null, [1, 0.6], null, null, null, null, null], [null, null, null, [0.5, 0.9], null, null, null, null]]};
 const DEFAULT_TYPES = ["Projet","BA","Technique","Support","RH","Autre"];
 const DEFAULT_PHASES = ["Initialisation et cadrage","Planification","Conception/Architecture et Design","Développement et Mise en œuvre","Test & validation","Mise en prod","Support et Amélioration Continue"];
 SEED_DATA.types = DEFAULT_TYPES.slice();
 SEED_DATA.phases = DEFAULT_PHASES.slice();
+SEED_DATA.opportunities = [
+  {name:"Exemple — Opportunité X", client:"À préciser", dateDebut: addMonthsISOStr(todayISOStr(), 3),
+   needs:[{role:"Développeur Backend", nombre:2, taux:1.0, assigned:[]}, {role:"Architecte Solutions", nombre:1, taux:0.5, assigned:[]}]}
+];
+SEED_DATA.horizonMonths = 6;
+
+/* ---------------------------------------------------------------------
+   Date helpers (used both by SEED_DATA above and the app below)
+--------------------------------------------------------------------- */
+function pad2(n){ return String(n).padStart(2,"0"); }
+function todayISOStr(){ const d=new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function addMonthsISOStr(iso, n){
+  let [y,m,d] = iso.split("-").map(Number);
+  m += n; while(m>12){ m-=12; y++; } while(m<1){ m+=12; y--; }
+  const lastDay = new Date(y, m, 0).getDate();
+  return `${y}-${pad2(m)}-${pad2(Math.min(d,lastDay))}`;
+}
 
 /* ---------------------------------------------------------------------
    State
@@ -292,14 +476,43 @@ SEED_DATA.phases = DEFAULT_PHASES.slice();
 const STORAGE_KEY = "pmo_dashboard_v1";
 let state = null;
 let dragCtx = null; // {kind:'res'|'proj', from:index}
+let curSegRi = null, curSegPj = null;
+let editingOppIndex = -1, editingNeeds = [];
 
 function cloneData(obj){
   if(typeof structuredClone === "function") return structuredClone(obj);
   return JSON.parse(JSON.stringify(obj));
 }
 
+function migrateState(s){
+  // v1/v2 alloc cells were a single [aff,chg]|null pair. v3+ stores an array of
+  // time-bounded segments per cell: [{debut,fin,aff,chg}, ...] (debut/fin "" = open-ended).
+  if(!s.schemaVersion || s.schemaVersion < 3){
+    s.alloc = s.alloc.map(row => row.map(cell => {
+      if(cell == null) return [];
+      if(Array.isArray(cell) && cell.length === 2 && typeof cell[0] !== "object"){
+        if(cell[0] == null && cell[1] == null) return [];
+        return [{debut:"", fin:"", aff:cell[0]||0, chg:cell[1]||0}];
+      }
+      return cell; // already migrated
+    }));
+  }
+  if(!Array.isArray(s.opportunities)) s.opportunities = [];
+  // v4: each need gets an "assigned" list of resource NAMES (not indices — survives
+  // reordering/renaming without remapping) reserving capacity for that need.
+  s.opportunities.forEach(o => {
+    (o.needs||[]).forEach(n => { if(!Array.isArray(n.assigned)) n.assigned = []; });
+  });
+  // v4: adjustable month-by-month horizon used by the cell planner and the personal resource plan.
+  if(!s.horizonMonths || s.horizonMonths < 1) s.horizonMonths = 6;
+  s.schemaVersion = 4;
+  return s;
+}
 
-// Remplace les fonctions loadState() et saveState() (cherche "function loadState")
+// ============================================
+// À REMPLACER dans le nouveau fichier
+// (remplace function loadState(){...} et function saveState(){...})
+// ============================================
 async function loadState(){
   try{
     const res = await fetch(`/api/dashboard?t=${Date.now()}`, {
@@ -308,25 +521,25 @@ async function loadState(){
     });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
+
     if(json.data && typeof json.data === 'object'){
       state = json.data;
       if(!Array.isArray(state.types) || !state.types.length) state.types = DEFAULT_TYPES.slice();
       if(!Array.isArray(state.phases) || !state.phases.length) state.phases = DEFAULT_PHASES.slice();
+      migrateState(state);
     } else {
       state = cloneData(SEED_DATA);
+      migrateState(state);
       saveState();
     }
   }catch(e){
     console.error('loadState: échec du fetch, repli sur SEED_DATA', e);
     state = cloneData(SEED_DATA);
+    migrateState(state);
   }
   return state;
 }
 
-// ============================================
-// À REMPLACER dans public/index.html : la fonction saveState()
-// (cherche "async function saveState")s
-// ============================================
 let saveTimeout = null;
 
 async function doSaveState(){
@@ -344,19 +557,72 @@ async function doSaveState(){
   }
 }
 
-// À AJOUTER dans public/index.html
-function setSaveStatus(text){
-  const el = document.getElementById("saveStatus");
-  if(el) el.textContent = text;
-}
-
 function saveState(){
   setSaveStatus("Enregistrement…");
   clearTimeout(saveTimeout);
   saveTimeout = setTimeout(doSaveState, 500);
 }
+
+function setSaveStatus(msg){
+  document.getElementById("saveStatus").textContent = msg;
+}
+
 /* ---------------------------------------------------------------------
-   Calculations
+   Tabs
+--------------------------------------------------------------------- */
+function switchTab(id){
+  document.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("active", p.id === id));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === id));
+  if(id === "tabPlan"){ renderOpportunities(); renderPlanDeCharge(); }
+}
+
+/* ---------------------------------------------------------------------
+   Time / segment helpers
+--------------------------------------------------------------------- */
+function todayISO(){ return todayISOStr(); }
+function formatDateFr(iso){ if(!iso) return "—"; const [y,m,d] = iso.split("-"); return `${d}/${m}/${y}`; }
+function monthBoundsForDate(iso){
+  const [y,m] = iso.split("-").map(Number);
+  const lastDay = new Date(y, m, 0).getDate();
+  return {start: `${y}-${pad2(m)}-01`, end: `${y}-${pad2(m)}-${pad2(lastDay)}`};
+}
+
+function getActiveSegment(ri, pj, dateISO){
+  dateISO = dateISO || todayISO();
+  const segs = state.alloc[ri][pj] || [];
+  return segs.find(s => (!s.debut || s.debut <= dateISO) && (!s.fin || s.fin >= dateISO)) || null;
+}
+function getNextFutureSegment(ri, pj, dateISO){
+  dateISO = dateISO || todayISO();
+  const segs = (state.alloc[ri][pj] || []).filter(s => s.debut && s.debut > dateISO);
+  segs.sort((a,b) => a.debut.localeCompare(b.debut));
+  return segs[0] || null;
+}
+function segCoversMonth(seg, monthStart, monthEnd){
+  const debut = seg.debut || "0000-01-01";
+  const fin = seg.fin || "9999-12-31";
+  return debut <= monthEnd && fin >= monthStart;
+}
+function monthsBetween(startISO, endISO){
+  const months = [];
+  if(!startISO || !endISO) return months;
+  let [y, m] = startISO.split("-").map(Number);
+  const [ey, em] = endISO.split("-").map(Number);
+  let count = 0;
+  while((y < ey || (y === ey && m <= em)) && count < 60){
+    const start = `${y}-${pad2(m)}-01`;
+    const lastDay = new Date(y, m, 0).getDate();
+    const end = `${y}-${pad2(m)}-${pad2(lastDay)}`;
+    const label = new Date(y, m-1, 1).toLocaleDateString("fr-FR", {month:"short", year:"numeric"});
+    months.push({key:`${y}-${pad2(m)}`, start, end, label});
+    m++; if(m > 12){ m = 1; y++; }
+    count++;
+  }
+  return months;
+}
+
+/* ---------------------------------------------------------------------
+   Calculations (current / "today" snapshot — drives Matrice tab)
 --------------------------------------------------------------------- */
 function statusFor(v){
   if(v < 0.70) return {label:"Sous-utilisé", cls:"st-sous"};
@@ -365,52 +631,40 @@ function statusFor(v){
   return {label:"Surcharge", cls:"st-sur"};
 }
 const STATUS_ORDER = ["Sous-utilisé","Optimal","Tendu","Surcharge"];
-const STATUS_CLASS = {"Sous-utilisé":"st-sous","Optimal":"st-opt","Tendu":"st-tendu","Surcharge":"st-sur"};
+const STATUS_HEX = {"Sous-utilisé":["#fef3dc","#8a5c00"], "Optimal":["#e5f6e5","#0c6b0c"], "Tendu":["#fdeae1","#a34321"], "Surcharge":["#fbe4e4","#b02a2a"]};
 
-function computeResourceRow(ri){
-  const row = state.alloc[ri];
+function computeResourceRow(ri, dateISO){
   let totalAff = 0, totalChg = 0;
   for(let j=0;j<state.projects.length;j++){
-    const cell = row[j];
-    if(cell){
-      const aff = cell[0] || 0;
-      const chg = cell[1] || 0;
+    const seg = getActiveSegment(ri, j, dateISO);
+    if(seg){
+      const aff = seg.aff || 0, chg = seg.chg || 0;
       totalAff += aff;
       totalChg += aff * chg;
     }
   }
   return {totalAff, totalChg, ecart: totalChg - totalAff};
 }
-
-function computeProjectTotals(pj){
+function computeProjectTotals(pj, dateISO){
   let totalAff = 0, totalChg = 0;
   for(let i=0;i<state.resources.length;i++){
-    const cell = state.alloc[i][pj];
-    if(cell){
-      const aff = cell[0] || 0;
-      const chg = cell[1] || 0;
+    const seg = getActiveSegment(i, pj, dateISO);
+    if(seg){
+      const aff = seg.aff || 0, chg = seg.chg || 0;
       totalAff += aff;
       totalChg += aff * chg;
     }
   }
   return {totalAff, totalChg};
 }
-
-function fmtPct(v){
-  return Math.round(v*100) + "%";
-}
+function fmtPct(v){ return Math.round(v*100) + "%"; }
 
 /* ---------------------------------------------------------------------
    Color scales
 --------------------------------------------------------------------- */
 function lerp(a,b,t){ return a + (b-a)*t; }
-function hexToRgb(h){
-  h = h.replace("#","");
-  return [parseInt(h.substr(0,2),16), parseInt(h.substr(2,2),16), parseInt(h.substr(4,2),16)];
-}
-function rgbToHex(r,g,b){
-  return "#" + [r,g,b].map(v=>Math.round(v).toString(16).padStart(2,"0")).join("");
-}
+function hexToRgb(h){ h = h.replace("#",""); return [parseInt(h.substr(0,2),16), parseInt(h.substr(2,2),16), parseInt(h.substr(4,2),16)]; }
+function rgbToHex(r,g,b){ return "#" + [r,g,b].map(v=>Math.round(v).toString(16).padStart(2,"0")).join(""); }
 function colorScale(v, max, c0, c1){
   const t = Math.max(0, Math.min(1, v/max));
   const a = hexToRgb(c0), b = hexToRgb(c1);
@@ -418,12 +672,11 @@ function colorScale(v, max, c0, c1){
 }
 function affColor(v){ return colorScale(v, 1.3, "eaf1fb", "1c5cab"); }
 function chgColor(v){ return colorScale(v, 1.5, "fceee3", "b3551a"); }
-const STATUS_HEX = {"Sous-utilisé":["#fef3dc","#8a5c00"], "Optimal":["#e5f6e5","#0c6b0c"], "Tendu":["#fdeae1","#a34321"], "Surcharge":["#fbe4e4","#b02a2a"]};
 
 /* ---------------------------------------------------------------------
-   Rendering
+   Rendering — Matrice tab
 --------------------------------------------------------------------- */
-// Remplace function renderAll() (cherche "function renderAll")
+
 function renderAll(){
   if (!state) return;
   renderKpis();
@@ -455,7 +708,6 @@ function renderKpis(){
 }
 
 function computeStatusCounts(kind){
-  // kind: 'aff' or 'chg'
   const counts = {"Sous-utilisé":0,"Optimal":0,"Tendu":0,"Surcharge":0};
   state.resources.forEach((res, ri) => {
     const {totalAff, totalChg} = computeResourceRow(ri);
@@ -517,10 +769,11 @@ function renderTable(){
   const tbody = document.querySelector("#matrice tbody");
   const tfoot = document.querySelector("#matrice tfoot");
 
-  // --- header ---
-  let projRow = `<tr class="proj-row"><th class="rowlabel-head" rowspan="2">Ressource</th>`;
+  // --- header (single row per project now — a period can hold several dated segments,
+  // edited via a per-cell modal, so no more separate Affecté/Charge sub-columns) ---
+  let headRow = `<tr><th class="rowlabel-head">Ressource</th>`;
   state.projects.forEach((p, pj) => {
-    projRow += `<th class="projhead" colspan="2" draggable="true" data-pj="${pj}"
+    headRow += `<th class="projhead" draggable="true" data-pj="${pj}"
         ondragstart="onColDragStart(event,${pj})" ondragover="onColDragOver(event,${pj})"
         ondragleave="onColDragLeave(event)" ondrop="onColDrop(event,${pj})" ondragend="onDragEnd()">
       <div class="phead-top">
@@ -531,14 +784,8 @@ function renderTable(){
       <select class="proj-phase-select" onchange="setProjectPhase(${pj},this.value)">${phaseOptionsHtml(p.phase)}</select>
     </th>`;
   });
-  projRow += `<th rowspan="2">Total<br>affecté</th><th rowspan="2">Statut</th><th rowspan="2">Chargeab.<br>totale</th><th rowspan="2">Écart</th><th rowspan="2">Statut</th></tr>`;
-
-  let subRow = `<tr>`;
-  state.projects.forEach(() => {
-    subRow += `<th style="min-width:56px;">Affecté</th><th style="min-width:56px;">Charge</th>`;
-  });
-  subRow += `</tr>`;
-  thead.innerHTML = projRow + subRow;
+  headRow += `<th>Total<br>affecté</th><th>Statut</th><th>Chargeab.<br>totale</th><th>Écart</th><th>Statut</th></tr>`;
+  thead.innerHTML = headRow;
 
   // --- body ---
   let body = "";
@@ -553,25 +800,29 @@ function renderTable(){
         <div class="rtop">
           <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
           <input class="name-input" value="${escapeHtml(res.name)}" onchange="renameResource(${ri},this.value)">
+          <span class="pv" title="Voir le plan de charge de cette ressource" onclick="openResourcePlanModal(${ri})">📅</span>
           <span class="rm" title="Retirer cette ressource" onclick="removeResource(${ri})">✕</span>
         </div>
         <select class="type-select" onchange="setResourceType(${ri},this.value)">${typeOptionsHtml(res.type)}</select>
-        <input class="role-input" value="${escapeHtml(res.role||"")}" placeholder="Rôle" onchange="setResourceRole(${ri},this.value)">
+        <input class="role-input" list="roleSuggestions" value="${escapeHtml(res.role||"")}" placeholder="Rôle" onchange="setResourceRole(${ri},this.value)">
       </td>`;
     state.projects.forEach((p, pj) => {
-      const cell = state.alloc[ri][pj] || [null,null];
-      const aff = cell[0], chg = cell[1];
-      const affBg = aff!=null ? affColor(aff) : "";
-      const chgBg = chg!=null ? chgColor(chg) : "";
-      body += `<td class="aff-cell" style="background:${affBg||"var(--blue-light)"}">
-          <input class="cell-input" type="number" min="0" max="300" step="5"
-            value="${aff!=null? Math.round(aff*100): ""}"
-            oninput="onCellInput(${ri},${pj},0,this.value)">
-        </td>`;
-      body += `<td class="chg-cell" style="background:${chgBg||"var(--orange-light)"}">
-          <input class="cell-input" type="number" min="0" max="300" step="5"
-            value="${chg!=null? Math.round(chg*100): ""}"
-            oninput="onCellInput(${ri},${pj},1,this.value)">
+      const active = getActiveSegment(ri, pj);
+      const future = getNextFutureSegment(ri, pj);
+      const affBg = active ? affColor(active.aff||0) : "#eaf1fb";
+      const chgBg = active ? chgColor(active.chg||0) : "#fceee3";
+      let futureHtml = "";
+      if(future){
+        futureHtml = `<div class="alloc-future">→ ${Math.round((future.aff||0)*100)}%/${Math.round((future.chg||0)*100)}% dès le ${formatDateFr(future.debut)}</div>`;
+      }else if(active && active.fin){
+        futureHtml = `<div class="alloc-future">jusqu'au ${formatDateFr(active.fin)}</div>`;
+      }
+      body += `<td class="alloc-cell" onclick="openSegmentModal(${ri},${pj})">
+          <div class="alloc-badges">
+            <span style="background:${affBg}">${active? Math.round((active.aff||0)*100)+"%":"—"}</span>
+            <span style="background:${chgBg}">${active? Math.round((active.chg||0)*100)+"%":"—"}</span>
+          </div>
+          ${futureHtml}
         </td>`;
     });
     body += `<td class="total-cell" id="tot-aff-${ri}">${fmtPct(totalAff)}</td>`;
@@ -587,10 +838,12 @@ function renderTable(){
   let foot = `<tr><td class="rowlabel">Total projet</td>`;
   state.projects.forEach((p, pj) => {
     const {totalAff, totalChg} = computeProjectTotals(pj);
-    foot += `<td id="totcol-aff-${pj}">${fmtPct(totalAff)}</td><td id="totcol-chg-${pj}">${fmtPct(totalChg)}</td>`;
+    foot += `<td>${fmtPct(totalAff)} / ${fmtPct(totalChg)}</td>`;
   });
   foot += `<td colspan="5"></td></tr>`;
   tfoot.innerHTML = foot;
+
+  populateRoleSuggestions();
 }
 
 function escapeHtml(s){
@@ -598,59 +851,25 @@ function escapeHtml(s){
 }
 
 /* ---------------------------------------------------------------------
-   Cell edits — incremental update (keeps focus, no full repaint)
---------------------------------------------------------------------- */
-function onCellInput(ri, pj, kind, rawValue){
-  const v = rawValue === "" ? null : Math.max(0, parseFloat(rawValue))/100;
-  if(!state.alloc[ri][pj]) state.alloc[ri][pj] = [null,null];
-  state.alloc[ri][pj][kind] = (rawValue==="" ? null : (isNaN(v)?null:v));
-
-  const td = event.target.closest("td");
-  if(kind===0){ td.style.background = state.alloc[ri][pj][0]!=null ? affColor(state.alloc[ri][pj][0]) : "var(--blue-light)"; }
-  else{ td.style.background = state.alloc[ri][pj][1]!=null ? chgColor(state.alloc[ri][pj][1]) : "var(--orange-light)"; }
-
-  const {totalAff, totalChg, ecart} = computeResourceRow(ri);
-  const stAff = statusFor(totalAff), stChg = statusFor(totalChg);
-  document.getElementById(`tot-aff-${ri}`).textContent = fmtPct(totalAff);
-  document.getElementById(`stat-aff-${ri}`).innerHTML = `<span class="${stAff.cls}">${stAff.label}</span>`;
-  document.getElementById(`tot-chg-${ri}`).textContent = fmtPct(totalChg);
-  document.getElementById(`ecart-${ri}`).textContent = (ecart>=0?"+":"") + fmtPct(ecart);
-  document.getElementById(`stat-chg-${ri}`).innerHTML = `<span class="${stChg.cls}">${stChg.label}</span>`;
-
-  const {totalAff:colAff, totalChg:colChg} = computeProjectTotals(pj);
-  document.getElementById(`totcol-aff-${pj}`).textContent = fmtPct(colAff);
-  document.getElementById(`totcol-chg-${pj}`).textContent = fmtPct(colChg);
-
-  renderKpis();
-  renderStatusCards();
-  renderProfileTable();
-  saveState();
-}
-
-/* ---------------------------------------------------------------------
    Inline edits: name / type / role / phase
 --------------------------------------------------------------------- */
 function renameResource(ri, value){
-  state.resources[ri].name = value.trim() || state.resources[ri].name;
+  const oldName = state.resources[ri].name;
+  const newName = value.trim() || oldName;
+  if(newName !== oldName){
+    // Opportunity assignments reference resources by NAME (stable across drag-and-drop
+    // reordering, unlike an index) — keep them in sync with a rename.
+    state.opportunities.forEach(o => (o.needs||[]).forEach(n => {
+      if(n.assigned) n.assigned = n.assigned.map(x => x===oldName ? newName : x);
+    }));
+  }
+  state.resources[ri].name = newName;
   saveState();
 }
-function setResourceRole(ri, value){
-  state.resources[ri].role = value.trim();
-  saveState();
-}
-function setResourceType(ri, value){
-  state.resources[ri].type = value;
-  renderProfileTable();
-  saveState();
-}
-function renameProject(pj, value){
-  state.projects[pj].name = value.trim() || state.projects[pj].name;
-  saveState();
-}
-function setProjectPhase(pj, value){
-  state.projects[pj].phase = value;
-  saveState();
-}
+function setResourceRole(ri, value){ state.resources[ri].role = value.trim(); renderAll(); saveState(); }
+function setResourceType(ri, value){ state.resources[ri].type = value; renderProfileTable(); saveState(); }
+function renameProject(pj, value){ state.projects[pj].name = value.trim() || state.projects[pj].name; saveState(); }
+function setProjectPhase(pj, value){ state.projects[pj].phase = value; saveState(); }
 
 /* ---------------------------------------------------------------------
    Add / remove resources & projects
@@ -669,7 +888,7 @@ function confirmAddResource(){
   const type = document.getElementById("newResType").value;
   const role = document.getElementById("newResRole").value.trim();
   state.resources.push({name, type, role});
-  state.alloc.push(new Array(state.projects.length).fill(null));
+  state.alloc.push(new Array(state.projects.length).fill(null).map(() => []));
   document.getElementById("newResName").value = "";
   document.getElementById("newResRole").value = "";
   closeModal("modalRes");
@@ -682,7 +901,7 @@ function confirmAddProject(){
   if(!name){ alert("Merci de saisir un nom."); return; }
   const phase = document.getElementById("newProjPhase").value;
   state.projects.push({name, phase});
-  state.alloc.forEach(row => row.push(null));
+  state.alloc.forEach(row => row.push([]));
   document.getElementById("newProjName").value = "";
   closeModal("modalProj");
   renderAll();
@@ -690,9 +909,13 @@ function confirmAddProject(){
 }
 
 function removeResource(ri){
-  if(!confirm(`Retirer "${state.resources[ri].name}" du tableau ?`)) return;
+  const removedName = state.resources[ri].name;
+  if(!confirm(`Retirer "${removedName}" du tableau ?`)) return;
   state.resources.splice(ri,1);
   state.alloc.splice(ri,1);
+  state.opportunities.forEach(o => (o.needs||[]).forEach(n => {
+    if(n.assigned) n.assigned = n.assigned.filter(x => x!==removedName);
+  }));
   renderAll();
   saveState();
 }
@@ -708,21 +931,10 @@ function removeProject(pj){
 /* ---------------------------------------------------------------------
    Drag & drop reordering
 --------------------------------------------------------------------- */
-function moveArrayItem(arr, from, to){
-  const item = arr.splice(from,1)[0];
-  arr.splice(to,0,item);
-}
+function moveArrayItem(arr, from, to){ const item = arr.splice(from,1)[0]; arr.splice(to,0,item); }
 
-function onRowDragStart(e, ri){
-  dragCtx = {kind:"res", from:ri};
-  e.dataTransfer.effectAllowed = "move";
-  e.dataTransfer.setData("text/plain", String(ri));
-}
-function onRowDragOver(e, ri){
-  if(!dragCtx || dragCtx.kind!=="res") return;
-  e.preventDefault();
-  e.currentTarget.classList.add("drag-over-row");
-}
+function onRowDragStart(e, ri){ dragCtx = {kind:"res", from:ri}; e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", String(ri)); }
+function onRowDragOver(e, ri){ if(!dragCtx || dragCtx.kind!=="res") return; e.preventDefault(); e.currentTarget.classList.add("drag-over-row"); }
 function onRowDragLeave(e){ e.currentTarget.classList.remove("drag-over-row"); }
 function onRowDrop(e, ri){
   e.preventDefault();
@@ -738,16 +950,8 @@ function onRowDrop(e, ri){
   dragCtx = null;
 }
 
-function onColDragStart(e, pj){
-  dragCtx = {kind:"proj", from:pj};
-  e.dataTransfer.effectAllowed = "move";
-  e.dataTransfer.setData("text/plain", String(pj));
-}
-function onColDragOver(e, pj){
-  if(!dragCtx || dragCtx.kind!=="proj") return;
-  e.preventDefault();
-  e.currentTarget.classList.add("drag-over-col");
-}
+function onColDragStart(e, pj){ dragCtx = {kind:"proj", from:pj}; e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", String(pj)); }
+function onColDragOver(e, pj){ if(!dragCtx || dragCtx.kind!=="proj") return; e.preventDefault(); e.currentTarget.classList.add("drag-over-col"); }
 function onColDragLeave(e){ e.currentTarget.classList.remove("drag-over-col"); }
 function onColDrop(e, pj){
   e.preventDefault();
@@ -785,22 +989,18 @@ function renderListsModal(){
 
 function renameType(i, value){
   value = value.trim();
-  if(!value) { renderListsModal(); return; }
+  if(!value){ renderListsModal(); return; }
   const old = state.types[i];
   state.types[i] = value;
   state.resources.forEach(r => { if(r.type === old) r.type = value; });
-  renderListsModal();
-  renderAll();
-  saveState();
+  renderListsModal(); renderAll(); saveState();
 }
 function deleteType(i){
   const t = state.types[i];
   const used = state.resources.some(r => r.type === t);
   if(used && !confirm(`"${t}" est utilisé par au moins une ressource. Le retirer de la liste des types proposés (les ressources concernées garderont ce libellé) ?`)) return;
   state.types.splice(i,1);
-  renderListsModal();
-  renderAll();
-  saveState();
+  renderListsModal(); renderAll(); saveState();
 }
 function addType(){
   const input = document.getElementById("newTypeInput");
@@ -809,28 +1009,23 @@ function addType(){
   if(state.types.includes(value)){ alert("Ce type existe déjà."); return; }
   state.types.push(value);
   input.value = "";
-  renderListsModal();
-  saveState();
+  renderListsModal(); saveState();
 }
 
 function renamePhase(i, value){
   value = value.trim();
-  if(!value) { renderListsModal(); return; }
+  if(!value){ renderListsModal(); return; }
   const old = state.phases[i];
   state.phases[i] = value;
   state.projects.forEach(p => { if(p.phase === old) p.phase = value; });
-  renderListsModal();
-  renderAll();
-  saveState();
+  renderListsModal(); renderAll(); saveState();
 }
 function deletePhase(i){
   const p = state.phases[i];
   const used = state.projects.some(pr => pr.phase === p);
   if(used && !confirm(`"${p}" est utilisée par au moins un projet. La retirer de la liste des phases proposées (les projets concernés garderont ce libellé) ?`)) return;
   state.phases.splice(i,1);
-  renderListsModal();
-  renderAll();
-  saveState();
+  renderListsModal(); renderAll(); saveState();
 }
 function addPhase(){
   const input = document.getElementById("newPhaseInput");
@@ -839,8 +1034,445 @@ function addPhase(){
   if(state.phases.includes(value)){ alert("Cette phase existe déjà."); return; }
   state.phases.push(value);
   input.value = "";
-  renderListsModal();
+  renderListsModal(); saveState();
+}
+
+/* ---------------------------------------------------------------------
+   Monthly grid planner (per Ressource × Projet cell)
+   Editing works month by month; internally it still compiles down to the
+   same segment array format ({debut,fin,aff,chg}) so every calculation
+   function elsewhere (getActiveSegment, computeResourceRow,
+   roleCapacityForMonth, exports…) keeps working unchanged.
+--------------------------------------------------------------------- */
+let editingMonthly = []; // [{key,start,end,label,aff,chg}, ...] for the cell currently open in modalSegments
+
+function segMonths(){
+  return monthsBetween(todayISO(), addMonthsISOStr(todayISO(), Math.max(1, state.horizonMonths||6) - 1));
+}
+function openSegmentModal(ri, pj){
+  curSegRi = ri; curSegPj = pj;
+  document.getElementById("segModalTitle").textContent = `Planifier — ${state.resources[ri].name} × ${state.projects[pj].name}`;
+  document.getElementById("segHorizonInput").value = state.horizonMonths || 6;
+  loadEditingMonthlyFromState();
+  renderSegGrid();
+  openModal("modalSegments");
+}
+function loadEditingMonthlyFromState(){
+  editingMonthly = segMonths().map(m => {
+    const seg = getActiveSegment(curSegRi, curSegPj, m.start);
+    return {...m, aff: seg? (seg.aff||0) : 0, chg: seg? (seg.chg||0) : 0};
+  });
+}
+function changeSegHorizon(val){
+  const n = Math.max(1, Math.min(36, parseInt(val,10)||6));
+  state.horizonMonths = n;
   saveState();
+  loadEditingMonthlyFromState();
+  renderSegGrid();
+}
+function renderSegGrid(){
+  const table = document.getElementById("segGridTable");
+  let head = `<tr><th class="row-lbl">Mois</th>` + editingMonthly.map(m => `<th>${m.label}</th>`).join("") + `</tr>`;
+  let rowAff = `<tr><td class="row-lbl">% Affecté</td>` + editingMonthly.map((m,i) =>
+    `<td><input type="number" min="0" max="300" step="5" value="${Math.round((m.aff||0)*100)}" onchange="updateMonthlyCell(${i},'aff',this.value)"></td>`).join("") + `</tr>`;
+  let rowChg = `<tr><td class="row-lbl">% Chargeab.</td>` + editingMonthly.map((m,i) =>
+    `<td><input type="number" min="0" max="300" step="5" value="${Math.round((m.chg||0)*100)}" onchange="updateMonthlyCell(${i},'chg',this.value)"></td>`).join("") + `</tr>`;
+  table.innerHTML = `<thead>${head}</thead><tbody>${rowAff}${rowChg}</tbody>`;
+}
+function updateMonthlyCell(i, field, value){
+  editingMonthly[i][field] = Math.max(0, parseFloat(value)||0)/100;
+}
+function saveSegments(){
+  // Compact consecutive months sharing the same (aff,chg) into single segments.
+  // The very first group is left open at the start (debut:"") and, unless a later
+  // group exists, the last group is left open at the end (fin:"") so the last
+  // value keeps applying indefinitely beyond the displayed horizon.
+  const segments = [];
+  editingMonthly.forEach((m, i) => {
+    const prev = segments[segments.length-1];
+    if(prev && prev.aff === m.aff && prev.chg === m.chg){
+      prev._lastMonth = m;
+    }else{
+      segments.push({aff:m.aff, chg:m.chg, _firstMonth:m, _lastMonth:m});
+    }
+  });
+  const compiled = segments.map((s,i) => ({
+    debut: i===0 ? "" : s._firstMonth.start,
+    fin: i===segments.length-1 ? "" : s._lastMonth.end,
+    aff: s.aff, chg: s.chg,
+  }));
+  state.alloc[curSegRi][curSegPj] = compiled;
+  closeModal("modalSegments");
+  renderAll();
+  saveState();
+}
+
+/* ---------------------------------------------------------------------
+   Personal capacity plan (per resource, all projects + assigned opportunities)
+--------------------------------------------------------------------- */
+function openResourcePlanModal(ri){
+  const res = state.resources[ri];
+  const months = segMonths();
+  document.getElementById("resPlanTitle").textContent = `Plan de charge — ${res.name} (${res.role||"rôle non précisé"})`;
+
+  let head = `<tr><th class="row-lbl">Projet / opportunité</th>` + months.map(m => `<th>${m.label}</th>`).join("") + `</tr>`;
+  let body = "";
+  const totals = months.map(() => ({aff:0, chg:0}));
+
+  state.projects.forEach((p, pj) => {
+    const rowSegs = months.map(m => getActiveSegment(ri, pj, m.start));
+    if(!rowSegs.some(s => s)) return;
+    body += `<tr><td class="row-lbl">${escapeHtml(p.name)}</td>` + rowSegs.map((s, mi) => {
+      if(s){ totals[mi].aff += (s.aff||0); totals[mi].chg += (s.aff||0)*(s.chg||0); }
+      return `<td>${s? fmtPct(s.aff||0)+" / "+fmtPct(s.chg||0) : "—"}</td>`;
+    }).join("") + `</tr>`;
+  });
+
+  state.opportunities.forEach(o => {
+    (o.needs||[]).forEach(n => {
+      if(!(n.assigned||[]).includes(res.name)) return;
+      body += `<tr><td class="row-lbl">🔹 ${escapeHtml(o.name)} — ${escapeHtml(n.role)}</td>` + months.map(m => {
+        const active = o.dateDebut && o.dateDebut <= m.end;
+        if(active){ const mi = months.indexOf(m); totals[mi].aff += (n.taux||0); }
+        return `<td>${active? fmtPct(n.taux||0) : "—"}</td>`;
+      }).join("") + `</tr>`;
+    });
+  });
+
+  if(!body) body = `<tr><td class="row-lbl" colspan="${months.length+1}" style="color:var(--muted);">Aucune affectation, sur aucun projet ni opportunité, dans cet horizon.</td></tr>`;
+
+  const totalRow = `<tr class="type-row"><td class="row-lbl">Total</td>` + totals.map(t => {
+    const st = statusFor(t.aff);
+    return `<td>${fmtPct(t.aff)}<br><span class="${st.cls}" style="padding:1px 5px;border-radius:6px;font-size:9px;">${st.label}</span></td>`;
+  }).join("") + `</tr>`;
+
+  document.getElementById("resPlanTableWrap").innerHTML =
+    `<table class="plan-table"><thead>${head}</thead><tbody>${body}${totalRow}</tbody></table>`;
+  openModal("modalResPlan");
+}
+
+/* ---------------------------------------------------------------------
+   Opportunités
+--------------------------------------------------------------------- */
+function populateRoleSuggestions(){
+  const roles = Array.from(new Set(state.resources.map(r=>r.role).filter(Boolean)));
+  document.getElementById("roleSuggestions").innerHTML = roles.map(r=>`<option value="${escapeHtml(r)}">`).join("");
+}
+
+function renderOpportunities(){
+  const wrap = document.getElementById("oppListWrap");
+  if(!state.opportunities.length){ wrap.innerHTML = `<p style="color:var(--muted);">Aucune opportunité pour le moment.</p>`; return; }
+  let html = `<p style="font-size:11px;color:var(--muted);margin:0 0 8px;">Le taux (%) dans « Besoins » est la charge demandée <b>par personne</b> sur cette opportunité (100&nbsp;% = temps plein). « Assigné(s) » liste les ressources déjà réservées sur ce besoin — leur charge est automatiquement décomptée de leur plan de charge.</p>`;
+  html += `<table class="opp-table"><thead><tr><th>Nom</th><th>Client</th><th>Début prévu</th><th>Besoins</th><th>Assigné(s)</th><th></th></tr></thead><tbody>`;
+  state.opportunities.forEach((o,i) => {
+    const needsTxt = (o.needs||[]).map(n => {
+      const covered = (n.assigned||[]).length;
+      return `${n.nombre} pers. — ${escapeHtml(n.role)} (${Math.round((n.taux||0)*100)}% chacun)${covered? ` — ${covered}/${n.nombre} couvert(s)`:""}`;
+    }).join("<br>") || "—";
+    const assignedTxt = (o.needs||[]).flatMap(n => n.assigned||[]).map(escapeHtml).join(", ") || "—";
+    html += `<tr><td>${escapeHtml(o.name)}</td><td>${escapeHtml(o.client||"")}</td><td>${formatDateFr(o.dateDebut)}</td><td>${needsTxt}</td><td>${assignedTxt}</td>
+      <td><span class="link-btn" onclick="editOpportunity(${i})">Modifier</span> · <span class="link-btn del" onclick="deleteOpportunity(${i})">Retirer</span></td></tr>`;
+  });
+  html += `</tbody></table>`;
+  wrap.innerHTML = html;
+}
+
+function renderNeedsRows(){
+  const wrap = document.getElementById("oppNeedsWrap");
+  const dateDebut = document.getElementById("oppDate").value;
+  wrap.innerHTML = editingNeeds.map((n,i) => {
+    const assigned = n.assigned || [];
+    const remaining = Math.max(0, (n.nombre||1) - assigned.length);
+    const recs = (n.role && dateDebut) ? recommendResourcesForRole(n.role, dateDebut, editingOppIndex).filter(r => !assigned.includes(r.name)) : [];
+    const assignedChips = assigned.map(name =>
+      `<span class="assign-chip">${escapeHtml(name)} <span class="del" onclick="unassignNeed(${i},decodeURIComponent('${encodeURIComponent(name)}'))">✕</span></span>`
+    ).join("") || `<span style="color:var(--muted);">aucun</span>`;
+    const recOptions = recs.slice(0,10).map(r => `<option value="${escapeHtml(r.name)}">${escapeHtml(r.name)} — dispo ${Math.round(r.dispo*100)}%</option>`).join("");
+    let assignUi = "";
+    if(!n.role){
+      assignUi = "";
+    }else if(remaining <= 0){
+      assignUi = `<span style="color:var(--opt);font-weight:600;">Besoin couvert</span>`;
+    }else if(!dateDebut){
+      assignUi = `<span style="color:var(--muted);">Renseigne la date de début pour voir les ressources disponibles.</span>`;
+    }else{
+      assignUi = `<select id="recSelect${i}">${recOptions || `<option value="">Aucune ressource "${escapeHtml(n.role)}" disponible</option>`}</select>
+        <button class="secondary" style="padding:4px 8px;font-size:11px;" onclick="assignNeedResource(${i})">+ Assigner</button>`;
+    }
+    return `
+    <div class="need-block">
+      <div class="list-item">
+        <input list="roleSuggestions" placeholder="Rôle" value="${escapeHtml(n.role||"")}" onchange="updateNeed(${i},'role',this.value)" style="flex:2;">
+        <input type="number" min="1" step="1" placeholder="Nb personnes" value="${n.nombre||1}" onchange="updateNeed(${i},'nombre',this.value)" style="width:90px;">
+        <input type="number" min="0" max="300" step="5" placeholder="Taux %/pers." value="${Math.round((n.taux!=null?n.taux:1)*100)}" onchange="updateNeed(${i},'taux',this.value)" style="width:90px;">
+        <span class="del" onclick="removeNeedRow(${i})">✕</span>
+      </div>
+      <div class="need-assign-row">
+        <span>Assigné(s) (${assigned.length}/${n.nombre||1}) : ${assignedChips}</span>
+        ${assignUi}
+      </div>
+    </div>`;
+  }).join("") || `<p style="color:var(--muted);font-size:12px;">Aucun besoin ajouté.</p>`;
+}
+function addNeedRow(){ editingNeeds.push({role:"", nombre:1, taux:1.0, assigned:[]}); renderNeedsRows(); }
+function removeNeedRow(i){ editingNeeds.splice(i,1); renderNeedsRows(); }
+function updateNeed(i, field, value){
+  if(field === "role") editingNeeds[i].role = value.trim();
+  else if(field === "nombre") editingNeeds[i].nombre = Math.max(1, parseInt(value)||1);
+  else if(field === "taux") editingNeeds[i].taux = Math.max(0, parseFloat(value)||0)/100;
+  renderNeedsRows();
+}
+function assignNeedResource(i){
+  const sel = document.getElementById("recSelect"+i);
+  if(!sel || !sel.value) return;
+  editingNeeds[i].assigned = editingNeeds[i].assigned || [];
+  if(!editingNeeds[i].assigned.includes(sel.value)) editingNeeds[i].assigned.push(sel.value);
+  renderNeedsRows();
+}
+function unassignNeed(i, name){
+  editingNeeds[i].assigned = (editingNeeds[i].assigned||[]).filter(x => x!==name);
+  renderNeedsRows();
+}
+
+function openAddOpportunity(){
+  editingOppIndex = -1; editingNeeds = [];
+  document.getElementById("oppModalTitle").textContent = "Ajouter une opportunité";
+  document.getElementById("oppName").value = "";
+  document.getElementById("oppClient").value = "";
+  document.getElementById("oppDate").value = todayISO();
+  populateRoleSuggestions();
+  renderNeedsRows();
+  openModal("modalOpp");
+}
+function editOpportunity(i){
+  editingOppIndex = i;
+  const o = state.opportunities[i];
+  editingNeeds = cloneData(o.needs || []).map(n => ({...n, assigned: n.assigned||[]}));
+  document.getElementById("oppModalTitle").textContent = "Modifier l'opportunité";
+  document.getElementById("oppName").value = o.name;
+  document.getElementById("oppClient").value = o.client || "";
+  document.getElementById("oppDate").value = o.dateDebut || "";
+  populateRoleSuggestions();
+  renderNeedsRows();
+  openModal("modalOpp");
+}
+function saveOpportunity(){
+  const name = document.getElementById("oppName").value.trim();
+  if(!name){ alert("Merci de saisir un nom."); return; }
+  const client = document.getElementById("oppClient").value.trim();
+  const dateDebut = document.getElementById("oppDate").value;
+  if(!dateDebut){ alert("Merci de choisir une date de début prévue."); return; }
+  const needs = editingNeeds.filter(n => n.role);
+  const opp = {name, client, dateDebut, needs};
+  if(editingOppIndex === -1) state.opportunities.push(opp);
+  else state.opportunities[editingOppIndex] = opp;
+  closeModal("modalOpp");
+  renderOpportunities();
+  renderPlanDeCharge();
+  saveState();
+}
+function deleteOpportunity(i){
+  if(!confirm(`Retirer l'opportunité "${state.opportunities[i].name}" ?`)) return;
+  state.opportunities.splice(i,1);
+  renderOpportunities();
+  renderPlanDeCharge();
+  saveState();
+}
+
+/* ---------------------------------------------------------------------
+   Plan de charge (capacité vs besoin, par rôle/type, mois par mois)
+--------------------------------------------------------------------- */
+function getRoleType(role){
+  const r = state.resources.find(r => r.role === role);
+  return r ? (r.type || "") : "";
+}
+function buildRoleList(){
+  const roles = new Set();
+  state.resources.forEach(r => { if(r.role) roles.add(r.role); });
+  state.opportunities.forEach(o => (o.needs||[]).forEach(n => { if(n.role) roles.add(n.role); }));
+  return Array.from(roles);
+}
+/* ---------------------------------------------------------------------
+   Opportunity reservations: once a named resource is assigned to a need,
+   their taux is reserved from their capacity for every month from the
+   opportunity's start onward (same "once started, keeps counting" logic
+   already used for aggregate role need below) — everywhere this capacity
+   is used (recommendations, Plan de charge, the resource's own plan).
+   `skipOppIndex` lets the opportunity currently open in the modal use its
+   own in-progress `editingNeeds` instead of the last-saved version.
+--------------------------------------------------------------------- */
+function resourceOppReservedForMonth(resName, monthEnd, skipOppIndex){
+  let sum = 0;
+  state.opportunities.forEach((o, oi) => {
+    if(oi === skipOppIndex) return;
+    if(!o.dateDebut || o.dateDebut > monthEnd) return;
+    (o.needs||[]).forEach(n => { if((n.assigned||[]).includes(resName)) sum += (n.taux||0); });
+  });
+  if(skipOppIndex != null && skipOppIndex === editingOppIndex){
+    const dateDebut = document.getElementById("oppDate") ? document.getElementById("oppDate").value : "";
+    if(dateDebut && dateDebut <= monthEnd){
+      editingNeeds.forEach(n => { if((n.assigned||[]).includes(resName)) sum += (n.taux||0); });
+    }
+  }
+  return sum;
+}
+function recommendResourcesForRole(role, dateDebut, skipOppIndex){
+  if(!dateDebut) return [];
+  const {start, end} = monthBoundsForDate(dateDebut);
+  const rows = [];
+  state.resources.forEach((res, ri) => {
+    if(res.role !== role) return;
+    let real = 0;
+    for(let pj=0; pj<state.projects.length; pj++){
+      (state.alloc[ri][pj]||[]).forEach(seg => { if(segCoversMonth(seg, start, end)) real += (seg.aff||0); });
+    }
+    const reserved = resourceOppReservedForMonth(res.name, end, skipOppIndex);
+    rows.push({name: res.name, dispo: 1 - real - reserved});
+  });
+  rows.sort((a,b) => b.dispo - a.dispo);
+  return rows;
+}
+function resourceMonthlyLoad(ri, monthStart, monthEnd){
+  // Total charge for one resource in one month: real project allocations
+  // (Matrice segments) PLUS any opportunity reservations already assigned to
+  // them — the same combination used for roleCapacityForMonth's aggregate,
+  // but exposed per resource so it can be shown/exported directly.
+  let real = 0;
+  for(let pj=0; pj<state.projects.length; pj++){
+    (state.alloc[ri][pj]||[]).forEach(seg => { if(segCoversMonth(seg, monthStart, monthEnd)) real += (seg.aff||0); });
+  }
+  return real + resourceOppReservedForMonth(state.resources[ri].name, monthEnd, null);
+}
+function roleCapacityForMonth(role, monthStart, monthEnd){
+  let effectif = 0, affSum = 0;
+  state.resources.forEach((res, ri) => {
+    if(res.role !== role) return;
+    effectif++;
+    for(let pj=0; pj<state.projects.length; pj++){
+      (state.alloc[ri][pj] || []).forEach(seg => {
+        if(segCoversMonth(seg, monthStart, monthEnd)) affSum += (seg.aff || 0);
+      });
+    }
+    affSum += resourceOppReservedForMonth(res.name, monthEnd, null);
+  });
+  return {effectif, capacite: effectif*1.0, affectation: affSum, disponible: effectif*1.0 - affSum};
+}
+function roleNeedForMonth(role, monthEnd){
+  let need = 0;
+  state.opportunities.forEach(o => {
+    (o.needs||[]).forEach(n => {
+      if(n.role !== role) return;
+      const startDate = o.dateDebut || "";
+      if(!startDate) return;
+      if(startDate <= monthEnd){
+        const remaining = Math.max(0, (n.nombre||0) - (n.assigned||[]).length);
+        need += remaining * (n.taux||0);
+      }
+    });
+  });
+  return need;
+}
+function defaultHorizon(){
+  const from = document.getElementById("planFrom");
+  const to = document.getElementById("planTo");
+  if(!from.value) from.value = todayISO();
+  if(!to.value) to.value = addMonthsISOStr(todayISO(), 12);
+}
+function planCellHtml(dispo, need, ecart){
+  const cls = ecart < 0 ? "ecart-neg" : (ecart < 0.15 ? "ecart-tight" : "ecart-pos");
+  return `<td class="${cls}"><div class="plan-sub">Dispo ${dispo.toFixed(1)} · Bes ${need.toFixed(1)}</div><div class="plan-ecart">${ecart>=0?"+":""}${ecart.toFixed(1)}</div></td>`;
+}
+function renderPlanDeCharge(){
+  defaultHorizon();
+  const du = document.getElementById("planFrom").value;
+  const au = document.getElementById("planTo").value;
+  const months = monthsBetween(du, au);
+  const wrap = document.getElementById("planTableWrap");
+  if(!months.length){ wrap.innerHTML = `<p style="color:var(--muted);padding:14px;">Choisis une plage de dates valide (Du ≤ Au).</p>`; return; }
+
+  const roles = buildRoleList();
+  const byType = {};
+  roles.forEach(role => {
+    const t = getRoleType(role) || "(À recruter)";
+    if(!byType[t]) byType[t] = [];
+    byType[t].push(role);
+  });
+
+  let html = `<table class="plan-table"><thead><tr><th class="plan-rowlabel">Profil / Rôle</th>`;
+  months.forEach(m => html += `<th>${m.label}</th>`);
+  html += `</tr></thead><tbody>`;
+
+  Object.keys(byType).sort().forEach(type => {
+    html += `<tr class="type-row"><td class="plan-rowlabel">${escapeHtml(type)}</td>`;
+    months.forEach(m => {
+      let cap=0, aff=0, need=0;
+      byType[type].forEach(role => {
+        const rc = roleCapacityForMonth(role, m.start, m.end);
+        cap += rc.capacite; aff += rc.affectation;
+        need += roleNeedForMonth(role, m.end);
+      });
+      const dispo = cap - aff;
+      html += planCellHtml(dispo, need, dispo-need);
+    });
+    html += `</tr>`;
+    byType[type].slice().sort().forEach(role => {
+      html += `<tr class="role-row"><td class="plan-rowlabel">${escapeHtml(role)}</td>`;
+      months.forEach(m => {
+        const rc = roleCapacityForMonth(role, m.start, m.end);
+        const need = roleNeedForMonth(role, m.end);
+        html += planCellHtml(rc.disponible, need, rc.disponible-need);
+      });
+      html += `</tr>`;
+
+      // Individual resources of this role, right underneath — so the charge of
+      // each named person (projects réels + opportunités déjà assignées) is
+      // directly visible without opening their personal plan (📅) one by one.
+      state.resources
+        .map((r,ri) => ({r,ri}))
+        .filter(x => x.r.role === role)
+        .sort((a,b) => a.r.name.localeCompare(b.r.name))
+        .forEach(({r,ri}) => {
+          html += `<tr class="resource-row"><td class="plan-rowlabel">${escapeHtml(r.name)}</td>`;
+          months.forEach(m => {
+            const load = resourceMonthlyLoad(ri, m.start, m.end);
+            const st = statusFor(load);
+            html += `<td class="res-load-cell ${st.cls}">${fmtPct(load)}</td>`;
+          });
+          html += `</tr>`;
+        });
+    });
+  });
+  if(roles.length === 0) html += `<tr><td colspan="${months.length+1}" style="color:var(--muted);">Aucun rôle à afficher — ajoute des ressources ou des opportunités.</td></tr>`;
+  html += `</tbody></table>`;
+  wrap.innerHTML = html;
+}
+function buildPlanRows(){
+  defaultHorizon();
+  const du = document.getElementById("planFrom").value;
+  const au = document.getElementById("planTo").value;
+  const months = monthsBetween(du, au);
+  const roles = buildRoleList();
+  const byType = {};
+  roles.forEach(role => {
+    const t = getRoleType(role) || "(À recruter)";
+    if(!byType[t]) byType[t] = [];
+    byType[t].push(role);
+  });
+  const header = ["Type","Rôle"];
+  months.forEach(m => header.push(`${m.label} — Dispo (ETP)`, `${m.label} — Besoin (ETP)`, `${m.label} — Écart (ETP)`));
+  const rows = [header];
+  Object.keys(byType).sort().forEach(type => {
+    byType[type].slice().sort().forEach(role => {
+      const row = [type, role];
+      months.forEach(m => {
+        const rc = roleCapacityForMonth(role, m.start, m.end);
+        const need = roleNeedForMonth(role, m.end);
+        row.push(Math.round(rc.disponible*100)/100, Math.round(need*100)/100, Math.round((rc.disponible-need)*100)/100);
+      });
+      rows.push(row);
+    });
+  });
+  return rows;
 }
 
 /* ---------------------------------------------------------------------
@@ -849,21 +1481,16 @@ function addPhase(){
 function downloadBlob(blob, filename){
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-
 function tsStamp(){ return new Date().toISOString().slice(0,10); }
 
 function exportBackup(){
   const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
   downloadBlob(blob, `dashboard_ressources_sauvegarde_${tsStamp()}.json`);
 }
-
 function importBackup(file){
   const reader = new FileReader();
   reader.onload = e => {
@@ -872,8 +1499,11 @@ function importBackup(file){
       if(!parsed.resources || !parsed.projects || !parsed.alloc) throw new Error("format invalide");
       if(!Array.isArray(parsed.types) || !parsed.types.length) parsed.types = DEFAULT_TYPES.slice();
       if(!Array.isArray(parsed.phases) || !parsed.phases.length) parsed.phases = DEFAULT_PHASES.slice();
+      migrateState(parsed);
       state = parsed;
       renderAll();
+      renderOpportunities();
+      renderPlanDeCharge();
       saveState();
       setSaveStatus("Sauvegarde importée avec succès.");
     }catch(err){
@@ -882,11 +1512,13 @@ function importBackup(file){
   };
   reader.readAsText(file);
 }
-
 function resetToSeed(){
   if(!confirm("Réinitialiser toutes les données aux valeurs d'exemple ? Les modifications non exportées seront perdues.")) return;
   state = cloneData(SEED_DATA);
+  migrateState(state);
   renderAll();
+  renderOpportunities();
+  renderPlanDeCharge();
   saveState();
 }
 
@@ -898,17 +1530,20 @@ function csvEscape(v){
   if(/[",\n;]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
   return s;
 }
+function rowsToCsv(rows){
+  return rows.map(r => r.map(csvEscape).join(",")).join("\r\n");
+}
 function buildMatrixRows(){
   const header = ["Ressource","Type","Rôle"];
-  state.projects.forEach(p => { header.push(`${p.name} - Affecté (%)`, `${p.name} - Chargeabilité (%)`); });
+  state.projects.forEach(p => { header.push(`${p.name} - Affecté (%)`, `${p.name} - Chargeabilité (%)`, `${p.name} - Fin prévue`); });
   header.push("Total affecté (%)","Statut affectation","Chargeabilité totale (%)","Écart (%)","Statut chargeabilité");
   const rows = [header];
   state.resources.forEach((res, ri) => {
     const {totalAff, totalChg, ecart} = computeResourceRow(ri);
     const row = [res.name, res.type||"", res.role||""];
     state.projects.forEach((p, pj) => {
-      const cell = state.alloc[ri][pj] || [null,null];
-      row.push(cell[0]!=null? Math.round(cell[0]*100): "", cell[1]!=null? Math.round(cell[1]*100): "");
+      const seg = getActiveSegment(ri, pj);
+      row.push(seg? Math.round((seg.aff||0)*100): "", seg? Math.round((seg.chg||0)*100): "", seg? formatDateFr(seg.fin): "");
     });
     row.push(Math.round(totalAff*100), statusFor(totalAff).label, Math.round(totalChg*100), Math.round(ecart*100), statusFor(totalChg).label);
     rows.push(row);
@@ -916,18 +1551,21 @@ function buildMatrixRows(){
   const footer = ["Total projet","",""];
   state.projects.forEach((p, pj) => {
     const {totalAff, totalChg} = computeProjectTotals(pj);
-    footer.push(Math.round(totalAff*100), Math.round(totalChg*100));
+    footer.push(Math.round(totalAff*100), Math.round(totalChg*100), "");
   });
   footer.push("","","","","");
   rows.push(footer);
   return rows;
 }
-
 function exportCsv(){
-  const rows = buildMatrixRows();
-  const csv = rows.map(r => r.map(csvEscape).join(",")).join("\r\n");
+  const csv = rowsToCsv(buildMatrixRows());
   const blob = new Blob(["﻿" + csv], {type:"text/csv;charset=utf-8"});
   downloadBlob(blob, `dashboard_ressources_matrice_${tsStamp()}.csv`);
+}
+function exportPlanCsv(){
+  const csv = rowsToCsv(buildPlanRows());
+  const blob = new Blob(["﻿" + csv], {type:"text/csv;charset=utf-8"});
+  downloadBlob(blob, `dashboard_ressources_plan_de_charge_${tsStamp()}.csv`);
 }
 
 /* ---------------------------------------------------------------------
@@ -978,12 +1616,47 @@ function buildResumeSheetRows(){
   STATUS_ORDER.forEach(l => rows.push([`Chargeabilité — ${l}`, chgCounts[l]]));
   return rows;
 }
+function buildOpportunitiesSheetRows(){
+  const rows = [["Opportunité","Client","Début prévu","Rôle demandé","Nombre","Taux %/pers.","Assigné(s)"]];
+  state.opportunities.forEach(o => {
+    if(!o.needs || !o.needs.length){ rows.push([o.name, o.client||"", formatDateFr(o.dateDebut), "", "", "", ""]); return; }
+    o.needs.forEach(n => rows.push([o.name, o.client||"", formatDateFr(o.dateDebut), n.role, n.nombre, Math.round((n.taux||0)*100), (n.assigned||[]).join(", ")]));
+  });
+  return rows;
+}
+function buildResourceChargeRows(){
+  // One row per resource, one column per month: charge totale (%) = allocations
+  // réelles (Matrice) + réservations d'opportunités déjà assignées — la vue
+  // "prévision" complète de chaque ressource, en un seul tableau exploitable
+  // (tri/filtre Excel) plutôt qu'un plan personnel à ouvrir un par un.
+  defaultHorizon();
+  const du = document.getElementById("planFrom").value;
+  const au = document.getElementById("planTo").value;
+  const months = monthsBetween(du, au);
+  const header = ["Ressource","Type","Rôle"];
+  months.forEach(m => header.push(`${m.label} — Charge (%)`));
+  const rows = [header];
+  state.resources.forEach((res, ri) => {
+    const row = [res.name, res.type||"", res.role||""];
+    months.forEach(m => row.push(Math.round(resourceMonthlyLoad(ri, m.start, m.end)*100)));
+    rows.push(row);
+  });
+  return rows;
+}
+function exportResourceChargeCsv(){
+  const csv = rowsToCsv(buildResourceChargeRows());
+  const blob = new Blob(["﻿" + csv], {type:"text/csv;charset=utf-8"});
+  downloadBlob(blob, `dashboard_ressources_charge_previsionnelle_${tsStamp()}.csv`);
+}
 function exportExcel(){
   const sheets = [
     {name:"Résumé", rows: buildResumeSheetRows()},
     {name:"Ressources", rows: buildResourcesSheetRows()},
     {name:"Projets", rows: buildProjectsSheetRows()},
     {name:"Matrice", rows: buildMatrixRows()},
+    {name:"Opportunités", rows: buildOpportunitiesSheetRows()},
+    {name:"Plan de charge", rows: buildPlanRows()},
+    {name:"Charge ressources", rows: buildResourceChargeRows()},
   ];
   const sheetsXml = sheets.map(s => xlsSheet(s.name, s.rows)).join("");
   const xml = `<?xml version="1.0"?>
@@ -1009,11 +1682,8 @@ function exportPrint(){
   const chgCounts = computeStatusCounts("chg");
 
   let tableHead = `<tr><th>Ressource</th><th>Type</th><th>Rôle</th>`;
-  state.projects.forEach(p => { tableHead += `<th colspan="2">${escapeHtml(p.name)}<br><span class="ph">${escapeHtml(p.phase||"")}</span></th>`; });
+  state.projects.forEach(p => { tableHead += `<th>${escapeHtml(p.name)}<br><span class="ph">${escapeHtml(p.phase||"")}</span></th>`; });
   tableHead += `<th>Total affecté</th><th>Statut</th><th>Chargeab. totale</th><th>Écart</th><th>Statut</th></tr>`;
-  let subHead = `<tr><th></th><th></th><th></th>`;
-  state.projects.forEach(() => { subHead += `<th>Aff.</th><th>Charge</th>`; });
-  subHead += `<th></th><th></th><th></th><th></th><th></th></tr>`;
 
   let bodyRows = "";
   state.resources.forEach((res, ri) => {
@@ -1021,34 +1691,49 @@ function exportPrint(){
     const stAff = statusFor(totalAff), stChg = statusFor(totalChg);
     bodyRows += `<tr><td class="lbl">${escapeHtml(res.name)}</td><td>${escapeHtml(res.type||"")}</td><td>${escapeHtml(res.role||"")}</td>`;
     state.projects.forEach((p, pj) => {
-      const cell = state.alloc[ri][pj] || [null,null];
-      bodyRows += `<td>${cell[0]!=null? fmtPct(cell[0]):""}</td><td>${cell[1]!=null? fmtPct(cell[1]):""}</td>`;
+      const seg = getActiveSegment(ri, pj);
+      bodyRows += `<td>${seg? fmtPct(seg.aff||0)+" / "+fmtPct(seg.chg||0):""}${seg&&seg.fin? `<br><span class="ph">jusqu'au ${formatDateFr(seg.fin)}</span>`:""}</td>`;
     });
     bodyRows += `<td class="tot">${fmtPct(totalAff)}</td><td>${stAff.label}</td><td class="tot">${fmtPct(totalChg)}</td><td>${(ecart>=0?"+":"")+fmtPct(ecart)}</td><td>${stChg.label}</td></tr>`;
   });
   let footRow = `<tr class="foot"><td colspan="3">Total projet</td>`;
   state.projects.forEach((p, pj) => {
     const {totalAff, totalChg} = computeProjectTotals(pj);
-    footRow += `<td>${fmtPct(totalAff)}</td><td>${fmtPct(totalChg)}</td>`;
+    footRow += `<td>${fmtPct(totalAff)} / ${fmtPct(totalChg)}</td>`;
   });
   footRow += `<td colspan="5"></td></tr>`;
+
+  let oppRows = "";
+  state.opportunities.forEach(o => {
+    const needsTxt = (o.needs||[]).map(n => {
+      const covered = (n.assigned||[]).length;
+      return `${n.nombre} pers. — ${escapeHtml(n.role)} (${Math.round((n.taux||0)*100)}% chacun)${covered? ` — ${covered}/${n.nombre} couvert(s)`:""}`;
+    }).join("<br>") || "—";
+    const assignedTxt = (o.needs||[]).flatMap(n => n.assigned||[]).map(escapeHtml).join(", ") || "—";
+    oppRows += `<tr><td class="lbl">${escapeHtml(o.name)}</td><td>${escapeHtml(o.client||"")}</td><td>${formatDateFr(o.dateDebut)}</td><td>${needsTxt}</td><td>${assignedTxt}</td></tr>`;
+  });
+
+  const planRows = buildPlanRows();
+  let planHead = `<tr>${planRows[0].map(h=>`<th>${escapeHtml(h)}</th>`).join("")}</tr>`;
+  let planBody = planRows.slice(1).map(r => `<tr>${r.map((c,ci)=>`<td${ci<2?' class="lbl"':''}>${escapeHtml(c)}</td>`).join("")}</tr>`).join("");
 
   const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Rapport — Dashboard Ressources PMO AKIENI</title>
   <style>
     body{font-family:Arial,Helvetica,sans-serif; color:#2c333a; margin:24px; font-size:11px;}
     h1{color:#1c3d63; font-size:18px; margin-bottom:2px;}
+    h2{color:#1c3d63; font-size:14px; margin:26px 0 8px;}
     .sub{color:#767f89; margin-bottom:18px;}
     .kpirow{display:flex; gap:16px; margin-bottom:16px; flex-wrap:wrap;}
     .kpi{border:1px solid #dfe3e8; border-radius:6px; padding:8px 14px;}
     .kpi .l{font-size:9px; color:#767f89; text-transform:uppercase;}
     .kpi .v{font-size:18px; font-weight:700; color:#1c3d63;}
-    table{border-collapse:collapse; width:100%; font-size:9.5px; margin-bottom:22px;}
+    table{border-collapse:collapse; width:100%; font-size:9.5px; margin-bottom:10px;}
     th,td{border:1px solid #dfe3e8; padding:3px 5px; text-align:center;}
     th{background:#1c3d63; color:#fff;}
     td.lbl{text-align:left; font-weight:600;}
     td.tot{font-weight:700; background:#f4f5f7;}
     tr.foot{font-weight:700; background:#eef0f3;}
-    .ph{font-weight:400; font-size:8px; color:#cfe0f2;}
+    .ph{font-weight:400; font-size:8px; color:#888;}
     @media print{ .noprint{display:none;} body{margin:10px;} }
     .noprint{margin-bottom:16px;}
     .noprint button{padding:8px 16px; font-size:13px; background:#1c3d63; color:#fff; border:none; border-radius:6px; cursor:pointer;}
@@ -1064,7 +1749,12 @@ function exportPrint(){
     <div class="kpi"><div class="l">Surcharge (affectation)</div><div class="v">${affCounts["Surcharge"]}</div></div>
     <div class="kpi"><div class="l">Surcharge (chargeabilité)</div><div class="v">${chgCounts["Surcharge"]}</div></div>
   </div>
-  <table><thead>${tableHead}${subHead}</thead><tbody>${bodyRows}${footRow}</tbody></table>
+  <h2>Matrice ressource × projet (situation du jour)</h2>
+  <table><thead>${tableHead}</thead><tbody>${bodyRows}${footRow}</tbody></table>
+  <h2>Opportunités à venir</h2>
+  <table><thead><tr><th>Nom</th><th>Client</th><th>Début prévu</th><th>Besoins</th><th>Assigné(s)</th></tr></thead><tbody>${oppRows || '<tr><td colspan="5">Aucune opportunité.</td></tr>'}</tbody></table>
+  <h2>Plan de charge par profil / rôle (en ETP)</h2>
+  <table><thead>${planHead}</thead><tbody>${planBody || '<tr><td colspan="2">Aucune donnée.</td></tr>'}</tbody></table>
   </body></html>`;
   win.document.open();
   win.document.write(html);
@@ -1072,15 +1762,15 @@ function exportPrint(){
 }
 
 /* ---------------------------------------------------------------------
-   Export: image (PNG) via canvas
+   Export: image (PNG) via canvas — Matrice snapshot (situation du jour)
 --------------------------------------------------------------------- */
 function exportImage(){
   const nRes = state.resources.length, nProj = state.projects.length;
-  const rowLabelW = 190, cellW = 54, extraW = [78,86,86,64,86];
-  const rowH = 24, headH = 44, subHeadH = 18, kpiH = 60, titleH = 46;
-  const tableW = rowLabelW + nProj*2*cellW + extraW.reduce((a,b)=>a+b,0);
+  const rowLabelW = 190, cellW = 108, extraW = [78,86,86,64,86];
+  const rowH = 30, headH = 40, kpiH = 60, titleH = 46;
+  const tableW = rowLabelW + nProj*cellW + extraW.reduce((a,b)=>a+b,0);
   const width = Math.max(tableW + 40, 900);
-  const height = titleH + kpiH + headH + subHeadH + nRes*rowH + rowH + 30;
+  const height = titleH + kpiH + headH + nRes*rowH + rowH + 30;
 
   const canvas = document.createElement("canvas");
   const scale = 2;
@@ -1091,15 +1781,13 @@ function exportImage(){
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0,0,width,height);
 
-  // title
   ctx.fillStyle = "#1c3d63";
   ctx.font = "bold 17px Arial";
   ctx.fillText("Dashboard Ressources — Portefeuille PMO AKIENI", 16, 24);
   ctx.fillStyle = "#767f89";
   ctx.font = "11px Arial";
-  ctx.fillText("Généré le " + new Date().toLocaleString("fr-FR"), 16, 40);
+  ctx.fillText("Situation du jour — généré le " + new Date().toLocaleString("fr-FR"), 16, 40);
 
-  // KPIs
   let sumAff=0,sumChg=0;
   for(let i=0;i<nRes;i++){ const {totalAff,totalChg}=computeResourceRow(i); sumAff+=totalAff; sumChg+=totalChg; }
   const kpis = [
@@ -1119,22 +1807,20 @@ function exportImage(){
 
   const tableTop = titleH + kpiH;
   let x0 = 16;
-  // header row 1: project names
   ctx.fillStyle = "#1c3d63"; ctx.fillRect(x0, tableTop, rowLabelW, headH);
-  ctx.fillStyle = "#fff"; ctx.font = "bold 11px Arial"; ctx.textBaseline = "middle";
+  ctx.fillStyle = "#fff"; ctx.font = "bold 11px Arial"; ctx.textBaseline = "middle"; ctx.textAlign="left";
   ctx.fillText("Ressource", x0+8, tableTop+headH/2);
   let x = x0 + rowLabelW;
-  const colX = []; // start x of each project's affecte column
+  const colX = [];
   state.projects.forEach(p => {
-    const w = cellW*2;
-    ctx.fillStyle = "#2a4d7a"; ctx.fillRect(x, tableTop, w, headH);
+    ctx.fillStyle = "#2a4d7a"; ctx.fillRect(x, tableTop, cellW, headH);
     ctx.fillStyle = "#fff"; ctx.font = "bold 10px Arial";
-    wrapCanvasText(ctx, p.name, x+w/2, tableTop+16, w-6);
+    wrapCanvasText(ctx, p.name, x+cellW/2, tableTop+16, cellW-6);
     ctx.fillStyle = "#cfe0f2"; ctx.font = "8px Arial"; ctx.textAlign="center";
-    ctx.fillText(truncate(p.phase||"",22), x+w/2, tableTop+headH-6);
+    ctx.fillText(truncate(p.phase||"",18), x+cellW/2, tableTop+headH-6);
     ctx.textAlign = "left";
     colX.push(x);
-    x += w;
+    x += cellW;
   });
   const extraLabels = ["Total affecté","Statut","Chargeab. totale","Écart","Statut"];
   const extraX = [];
@@ -1147,22 +1833,8 @@ function exportImage(){
     extraX.push(x);
     x += w;
   });
-  // sub-header row
-  const subTop = tableTop + headH;
-  x = x0 + rowLabelW;
-  state.projects.forEach(() => {
-    ctx.fillStyle = "#2a4d7a"; ctx.fillRect(x, subTop, cellW*2, subHeadH);
-    ctx.fillStyle = "#fff"; ctx.font = "9px Arial"; ctx.textAlign="center";
-    ctx.fillText("Affecté", x+cellW/2, subTop+subHeadH/2+3);
-    ctx.fillText("Charge", x+cellW+cellW/2, subTop+subHeadH/2+3);
-    ctx.textAlign = "left";
-    x += cellW*2;
-  });
-  ctx.fillStyle = "#2a4d7a"; ctx.fillRect(x0, subTop, rowLabelW, subHeadH);
-  extraX.forEach(ex => { ctx.fillStyle = "#2a4d7a"; ctx.fillRect(ex, subTop, extraW[extraX.indexOf(ex)], subHeadH); });
 
-  // rows
-  let y = subTop + subHeadH;
+  let y = tableTop + headH;
   state.resources.forEach((res, ri) => {
     const {totalAff, totalChg, ecart} = computeResourceRow(ri);
     const stAff = statusFor(totalAff), stChg = statusFor(totalChg);
@@ -1174,16 +1846,13 @@ function exportImage(){
     ctx.fillText(truncate(res.name,26), x0+8, y+rowH/2+3);
 
     state.projects.forEach((p, pj) => {
-      const cell = state.alloc[ri][pj] || [null,null];
+      const seg = getActiveSegment(ri, pj);
       const cx = colX[pj];
-      ctx.fillStyle = cell[0]!=null ? affColor(cell[0]) : "#eaf1fb";
+      ctx.fillStyle = seg ? affColor(seg.aff||0) : "#f7f8fa";
       ctx.fillRect(cx, y, cellW, rowH);
-      ctx.fillStyle = cell[1]!=null ? chgColor(cell[1]) : "#fceee3";
-      ctx.fillRect(cx+cellW, y, cellW, rowH);
       ctx.fillStyle = "#2c333a"; ctx.font = "10px Arial"; ctx.textAlign = "center";
-      if(cell[0]!=null) ctx.fillText(fmtPct(cell[0]), cx+cellW/2, y+rowH/2+3);
-      if(cell[1]!=null) ctx.fillText(fmtPct(cell[1]), cx+cellW+cellW/2, y+rowH/2+3);
-      ctx.strokeRect(cx, y, cellW, rowH); ctx.strokeRect(cx+cellW, y, cellW, rowH);
+      if(seg) ctx.fillText(`${fmtPct(seg.aff||0)} / ${fmtPct(seg.chg||0)}`, cx+cellW/2, y+rowH/2+3);
+      ctx.strokeRect(cx, y, cellW, rowH);
     });
 
     const vals = [fmtPct(totalAff), stAff.label, fmtPct(totalChg), (ecart>=0?"+":"")+fmtPct(ecart), stChg.label];
@@ -1198,7 +1867,6 @@ function exportImage(){
     y += rowH;
   });
 
-  // total projet row
   ctx.fillStyle = "#eef0f3"; ctx.fillRect(x0, y, tableW, rowH);
   ctx.strokeRect(x0, y, rowLabelW, rowH);
   ctx.fillStyle = "#2c333a"; ctx.font = "bold 10px Arial"; ctx.textAlign="left";
@@ -1206,16 +1874,14 @@ function exportImage(){
   state.projects.forEach((p, pj) => {
     const {totalAff, totalChg} = computeProjectTotals(pj);
     const cx = colX[pj];
-    ctx.strokeRect(cx, y, cellW, rowH); ctx.strokeRect(cx+cellW, y, cellW, rowH);
+    ctx.strokeRect(cx, y, cellW, rowH);
     ctx.fillStyle = "#2c333a"; ctx.font = "bold 9.5px Arial"; ctx.textAlign="center";
-    ctx.fillText(fmtPct(totalAff), cx+cellW/2, y+rowH/2+3);
-    ctx.fillText(fmtPct(totalChg), cx+cellW+cellW/2, y+rowH/2+3);
+    ctx.fillText(`${fmtPct(totalAff)} / ${fmtPct(totalChg)}`, cx+cellW/2, y+rowH/2+3);
   });
   ctx.textAlign = "left";
 
   canvas.toBlob(blob => downloadBlob(blob, `dashboard_ressources_${tsStamp()}.png`), "image/png");
 }
-
 function truncate(s, n){ s = String(s||""); return s.length>n ? s.slice(0,n-1)+"…" : s; }
 function wrapCanvasText(ctx, text, cx, y, maxWidth){
   ctx.textAlign = "center";
@@ -1242,6 +1908,8 @@ document.getElementById("fileImport").addEventListener("change", e => {
   if(e.target.files.length) importBackup(e.target.files[0]);
   e.target.value = "";
 });
+document.getElementById("btnAddOpp").addEventListener("click", openAddOpportunity);
+document.getElementById("btnRecalcPlan").addEventListener("click", renderPlanDeCharge);
 
 document.getElementById("btnExportMenu").addEventListener("click", (e) => {
   e.stopPropagation();
@@ -1250,6 +1918,8 @@ document.getElementById("btnExportMenu").addEventListener("click", (e) => {
 document.addEventListener("click", () => document.getElementById("exportMenu").classList.remove("open"));
 document.getElementById("btnExportJson").addEventListener("click", exportBackup);
 document.getElementById("btnExportCsv").addEventListener("click", exportCsv);
+document.getElementById("btnExportPlanCsv").addEventListener("click", exportPlanCsv);
+document.getElementById("btnExportResCharge").addEventListener("click", exportResourceChargeCsv);
 document.getElementById("btnExportExcel").addEventListener("click", exportExcel);
 document.getElementById("btnExportImage").addEventListener("click", exportImage);
 document.getElementById("btnExportPrint").addEventListener("click", exportPrint);
@@ -1260,6 +1930,7 @@ loadState().then(() => {
 }).catch((err) => {
   console.error('Erreur critique au chargement de l\u2019état:', err);
   state = cloneData(SEED_DATA);
+  migrateState(state);
   renderAll();
 });
 </script>
