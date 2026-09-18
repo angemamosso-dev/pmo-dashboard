@@ -1316,6 +1316,11 @@ function resourceOppReservedForMonth(resName, monthEnd, skipOppIndex){
   }
   return sum;
 }
+// ============================================
+// À REMPLACER : function recommendResourcesForRole(...)
+// (même bug dans le calcul de dispo utilisé pour les recommandations
+// d'affectation aux opportunités — par cohérence, même correctif)
+// ============================================
 function recommendResourcesForRole(role, dateDebut, skipOppIndex){
   if(!dateDebut) return [];
   const {start, end} = monthBoundsForDate(dateDebut);
@@ -1324,7 +1329,9 @@ function recommendResourcesForRole(role, dateDebut, skipOppIndex){
     if(res.role !== role) return;
     let real = 0;
     for(let pj=0; pj<state.projects.length; pj++){
-      (state.alloc[ri][pj]||[]).forEach(seg => { if(segCoversMonth(seg, start, end)) real += (seg.aff||0); });
+      (state.alloc[ri][pj]||[]).forEach(seg => {
+        if(segCoversMonth(seg, start, end)) real += (seg.aff||0) * (seg.chg||0);
+      });
     }
     const reserved = resourceOppReservedForMonth(res.name, end, skipOppIndex);
     rows.push({name: res.name, dispo: 1 - real - reserved});
@@ -1332,17 +1339,23 @@ function recommendResourcesForRole(role, dateDebut, skipOppIndex){
   rows.sort((a,b) => b.dispo - a.dispo);
   return rows;
 }
+// ============================================
+// À REMPLACER : function resourceMonthlyLoad(...)
+// (calcule la charge affichée pour chaque ressource nommée dans le plan)
+// ============================================
 function resourceMonthlyLoad(ri, monthStart, monthEnd){
-  // Total charge for one resource in one month: real project allocations
-  // (Matrice segments) PLUS any opportunity reservations already assigned to
-  // them — the same combination used for roleCapacityForMonth's aggregate,
-  // but exposed per resource so it can be shown/exported directly.
   let real = 0;
   for(let pj=0; pj<state.projects.length; pj++){
-    (state.alloc[ri][pj]||[]).forEach(seg => { if(segCoversMonth(seg, monthStart, monthEnd)) real += (seg.aff||0); });
+    (state.alloc[ri][pj]||[]).forEach(seg => {
+      if(segCoversMonth(seg, monthStart, monthEnd)) real += (seg.aff||0) * (seg.chg||0);
+    });
   }
   return real + resourceOppReservedForMonth(state.resources[ri].name, monthEnd, null);
 }
+// ============================================
+// À REMPLACER : function roleCapacityForMonth(...)
+// (calcule "affSum" utilisé pour Dispo = Capacité − Affectation, par rôle/type)
+// ============================================
 function roleCapacityForMonth(role, monthStart, monthEnd){
   let effectif = 0, affSum = 0;
   state.resources.forEach((res, ri) => {
@@ -1350,7 +1363,7 @@ function roleCapacityForMonth(role, monthStart, monthEnd){
     effectif++;
     for(let pj=0; pj<state.projects.length; pj++){
       (state.alloc[ri][pj] || []).forEach(seg => {
-        if(segCoversMonth(seg, monthStart, monthEnd)) affSum += (seg.aff || 0);
+        if(segCoversMonth(seg, monthStart, monthEnd)) affSum += (seg.aff||0) * (seg.chg||0);
       });
     }
     affSum += resourceOppReservedForMonth(res.name, monthEnd, null);
