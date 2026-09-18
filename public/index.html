@@ -43,7 +43,13 @@
   .status-card{background:#fff; border:1px solid var(--border); border-radius:8px; padding:10px 16px; flex:1; min-width:260px;}
   .status-card .title{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-bottom:8px;}
   .status-chip-row{display:flex; gap:8px; flex-wrap:wrap;}
-  .status-chip{border-radius:8px; padding:6px 10px; font-size:11.5px; font-weight:700; flex:1; text-align:center; min-width:70px;}
+ /* ============================================
+   À REMPLACER dans le <style>
+   (cherche ".status-chip{border-radius:8px")
+   ============================================ */
+.status-chip{border-radius:8px; padding:6px 10px; font-size:11.5px; font-weight:700; flex:1; text-align:center; min-width:70px; cursor:pointer; transition:transform .1s, box-shadow .1s;}
+.status-chip:hover{transform:translateY(-1px); box-shadow:0 2px 6px rgba(20,30,45,.15);}
+.status-chip.active{outline:2px solid var(--navy); outline-offset:1px;}
 
   .profile-table-wrap, .opp-table-wrap, .plan-table-wrap{background:#fff; border:1px solid var(--border); border-radius:8px; overflow:auto;}
   table.profile-table, table.opp-table{width:100%; border-collapse:collapse; font-size:12.5px;}
@@ -476,6 +482,7 @@ function addMonthsISOStr(iso, n){
 const STORAGE_KEY = "pmo_dashboard_v1";
 let state = null;
 let dragCtx = null; // {kind:'res'|'proj', from:index}
+let statusFilter = null; // {kind:'aff'|'chg', label:'Optimal'} ou null
 let curSegRi = null, curSegPj = null;
 let editingOppIndex = -1, editingNeeds = [];
 
@@ -721,15 +728,29 @@ function renderStatusCards(){
   const el = document.getElementById("statusCards");
   const affCounts = computeStatusCounts("aff");
   const chgCounts = computeStatusCounts("chg");
-  function card(title, counts){
+  function card(title, kind, counts){
     const chips = STATUS_ORDER.map(label => {
       const [bg,fg] = STATUS_HEX[label];
-      return `<div class="status-chip" style="background:${bg};color:${fg}">${label}<br>${counts[label]}</div>`;
+      const isActive = statusFilter && statusFilter.kind === kind && statusFilter.label === label;
+      return `<div class="status-chip${isActive?" active":""}" style="background:${bg};color:${fg}"
+                onclick="applyStatusFilter('${kind}','${label}')" title="Voir les ressources en ${label}">
+                ${label}<br>${counts[label]}
+              </div>`;
     }).join("");
     return `<div class="status-card"><div class="title">${title}</div><div class="status-chip-row">${chips}</div></div>`;
   }
-  el.innerHTML = card("Statuts — Affectation", affCounts) + card("Statuts — Chargeabilité totale", chgCounts);
+  el.innerHTML = card("Statuts — Affectation", "aff", affCounts) + card("Statuts — Chargeabilité totale", "chg", chgCounts);
 }
+
+function applyStatusFilter(kind, label){
+  if(statusFilter && statusFilter.kind === kind && statusFilter.label === label){
+    statusFilter = null; // re-clic sur le même chip → on retire le filtre
+  } else {
+    statusFilter = {kind, label};
+  }
+  renderStatusCards();
+  renderTable();
+  document.querySelector(".table-wrap")?.scrollIntoView({behavior:"smooth", block:"start"});
 
 function renderProfileTable(){
   const groups = {};
@@ -764,28 +785,27 @@ function phaseOptionsHtml(current){
   return opts;
 }
 
-function renderTable(){
-  const thead = document.querySelector("#matrice thead");
-  const tbody = document.querySelector("#matrice tbody");
-  const tfoot = document.querySelector("#matrice tfoot");
-
-  // --- header (single row per project now — a period can hold several dated segments,
-  // edited via a per-cell modal, so no more separate Affecté/Charge sub-columns) ---
-  let headRow = `<tr><th class="rowlabel-head">Ressource</th>`;
-  state.projects.forEach((p, pj) => {
-    headRow += `<th class="projhead" draggable="true" data-pj="${pj}"
-        ondragstart="onColDragStart(event,${pj})" ondragover="onColDragOver(event,${pj})"
-        ondragleave="onColDragLeave(event)" ondrop="onColDrop(event,${pj})" ondragend="onDragEnd()">
-      <div class="phead-top">
-        <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
-        <input class="proj-name-input" value="${escapeHtml(p.name)}" onchange="renameProject(${pj},this.value)">
-        <span class="pm" title="Retirer ce projet" onclick="removeProject(${pj})">✕</span>
-      </div>
-      <select class="proj-phase-select" onchange="setProjectPhase(${pj},this.value)">${phaseOptionsHtml(p.phase)}</select>
-    </th>`;
-  });
-  headRow += `<th>Total<br>affecté</th><th>Statut</th><th>Chargeab.<br>totale</th><th>Écart</th><th>Statut</th></tr>`;
-  thead.innerHTML = headRow;
+// ============================================
+// À REMPLACER dans function renderTable(){...} : uniquement le bloc "--- body ---"
+// (filtre les lignes selon statusFilter, sans changer les autres blocs de renderTable)
+// ============================================
+  // --- bandeau de filtre actif ---
+  let filterBanner = document.getElementById("statusFilterBanner");
+  if(!filterBanner){
+    filterBanner = document.createElement("div");
+    filterBanner.id = "statusFilterBanner";
+    document.querySelector(".table-wrap").insertAdjacentElement("beforebegin", filterBanner);
+  }
+  if(statusFilter){
+    const [bg,fg] = STATUS_HEX[statusFilter.label];
+    const kindLabel = statusFilter.kind === "aff" ? "Affectation" : "Chargeabilité totale";
+    filterBanner.style.cssText = `margin:0 28px 10px; padding:8px 14px; border-radius:8px; background:${bg}; color:${fg}; font-size:12.5px; font-weight:600; display:flex; align-items:center; gap:10px;`;
+    filterBanner.innerHTML = `Filtre actif : <b>${kindLabel} — ${statusFilter.label}</b>
+      <span style="margin-left:auto; cursor:pointer; text-decoration:underline;" onclick="applyStatusFilter('${statusFilter.kind}','${statusFilter.label}')">✕ Réinitialiser</span>`;
+  } else {
+    filterBanner.style.cssText = "display:none;";
+    filterBanner.innerHTML = "";
+  }
 
   // --- body ---
   let body = "";
@@ -793,6 +813,12 @@ function renderTable(){
     const {totalAff, totalChg, ecart} = computeResourceRow(ri);
     const stAff = statusFor(totalAff);
     const stChg = statusFor(totalChg);
+
+    if(statusFilter){
+      const st = statusFilter.kind === "aff" ? stAff : stChg;
+      if(st.label !== statusFilter.label) return; // ressource hors filtre → on saute la ligne
+    }
+
     body += `<tr draggable="true" data-ri="${ri}"
         ondragstart="onRowDragStart(event,${ri})" ondragover="onRowDragOver(event,${ri})"
         ondragleave="onRowDragLeave(event)" ondrop="onRowDrop(event,${ri})" ondragend="onDragEnd()">`;
